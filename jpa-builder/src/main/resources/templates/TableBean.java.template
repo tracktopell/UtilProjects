@@ -1,0 +1,41 @@
+/**
+ * @(#)${tablebean.name}.java
+ *
+ * Copyright 2008 TAE-IT
+ */
+
+package ${tablebean.package};
+
+/**
+ * Clase para mapear la Tabla ${tablebean.name}
+ * 
+ * @author Alfredo Estrada, @email aegonzalez@taeit.com
+ * @version 1.0
+ * @date ${date}
+ */
+
+public class ${tablebean.name} {
+    @foreach tablebean.member in ${tablebean.members}    
+    ${tablebean.member.javadocCommnet}    
+    ${tablebean.member.declaration}
+
+    @endfor
+    /** Default Constructor */
+    public ${tablebean.name}() {
+    }    
+    @foreach tablebean.member in ${tablebean.members}
+
+    /**
+     * 
+     */
+    ${tablebean.member.getter}
+
+    /**
+     * 
+     */    
+    ${tablebean.member.setter}
+
+    ${tablebean.member.parseAndSetter}
+
+    @endfor
+}

@@ -1,0 +1,533 @@
+/**
+ * ${rdbms.name}${tablebean.name}DAO
+ *
+ * Created ${date}
+ *
+ * @author tracktopell :: DAO Builder
+ * http://www.tracktopell.com.mx
+ */
+
+package ${concretedao.package};
+
+import javax.sql.RowSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import ${dao.package}.${tablebean.name}DAO;
+import ${dao.package}.SetDataException;
+import ${dao.package}.GetDataException;
+import ${tablebean.package}.${tablebean.name};
+
+public class ${rdbms.name}${tablebean.name}DAO implements ${tablebean.name}DAO {
+    protected boolean wrapedIntoJTATransaction = false; 
+
+    public int insert${tablebean.name}(${tablebean.name} bean${tablebean.name}) throws SetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        StringBuffer sbQuery = new StringBuffer(
+                "INSERT INTO ${tablebean.sql.name} ");
+        sbQuery.append("( ${tablebean.columns.insert.list_cols} )");
+        sbQuery.append("VALUES ( ${tablebean.columns.insert.list_ps} )");
+        int countInserted = -1;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            ps = conn.prepareStatement(sbQuery.toString());
+
+            @foreach column4insert in ${tablebean.columns.insert}
+            ps.${column4insert.ps.setter}(${loop.counter},bean${tablebean.name}.${column4insert.getter}());
+            @endfor
+
+            countInserted = ps.executeUpdate();
+            @if ${tablebean.autoIncrement.keys}
+            // Retrieve the auto-generated keys and store in the bean.
+            ResultSet rsKeys = ps.getGeneratedKeys();
+            int keyCounter = 1;
+            if(rsKeys.next()){
+            @endif
+                @foreach column4update in ${tablebean.columns.insert.keys}
+                bean${tablebean.name}.${column4insert.setter}(rsKeys.${column4insert.rs.getter}(keyCounter++));
+                @endfor                
+            @if ${tablebean.autoIncrement.keys}
+            }
+            rsKeys.close();
+            @endif
+        } catch(Exception ex){
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return countInserted;
+    }
+
+    public int insert${tablebean.name}(Collection  list${tablebean.name}) throws SetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        StringBuffer sbQuery = new StringBuffer(
+                "INSERT INTO ${tablebean.sql.name} ");
+        sbQuery.append("( ${tablebean.columns.insert.list_cols} )");
+        sbQuery.append("VALUES ( ${tablebean.columns.insert.list_ps} )");
+        int countInserted = -1;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            if(!wrapedIntoJTATransaction)
+                conn.setAutoCommit(false);
+            ps = conn.prepareStatement(sbQuery.toString());
+
+            countInserted = 0;
+            for(Iterator iter${tablebean.name} = list${tablebean.name}.iterator(); iter${tablebean.name}.hasNext(); ) {
+                ${tablebean.name} bean${tablebean.name} = (${tablebean.name}) iter${tablebean.name}.next();
+
+                ps.clearParameters();
+                @foreach column4insert in ${tablebean.columns.insert}
+                ps.${column4insert.ps.setter}(${loop.counter},bean${tablebean.name}.${column4insert.getter}());
+                @endfor            
+                countInserted += ps.executeUpdate();
+                @if ${tablebean.autoIncrement.keys}
+                // Retrieve the auto-generated keys and store in the bean.
+                ResultSet rsKeys = ps.getGeneratedKeys();
+                int keyCounter = 1;
+                if(rsKeys.next()){
+                @endif
+                    @foreach column4update in ${tablebean.columns.insert.keys}
+                    bean${tablebean.name}.${column4insert.setter}(rsKeys.${column4insert.rs.getter}(keyCounter++));                                
+                    @endfor                
+                @if ${tablebean.autoIncrement.keys}
+                }
+                rsKeys.close();
+                @endif
+            }
+            if(!wrapedIntoJTATransaction)
+                conn.commit();
+        } catch(Exception ex){
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            countInserted = -1;            
+            try{
+                if(!wrapedIntoJTATransaction)
+                    conn.rollback();                
+            } catch(SQLException exRB){
+                exRB.printStackTrace();                
+            }
+            throw new SetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return countInserted;
+    }
+
+    public int delete${tablebean.name}(${tablebean.name} bean${tablebean.name}) throws SetDataException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int countDeleted = -1;
+        StringBuffer sbQuery = new StringBuffer("DELETE FROM ${tablebean.sql.name} WHERE ( 1=1 ");
+        int coutColsWhere=-1;
+
+        @foreach column4select in ${tablebean.columns.select}
+        if(bean${tablebean.name}.${column4insert.getter}() != null ){
+            sbQuery.append(" AND ${column4select.name} = ?");
+        }
+        @endfor
+        sbQuery.append(")");
+        int countInserted = -1;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            ps = conn.prepareStatement(sbQuery.toString());
+            coutColsWhere=0;
+
+            @foreach column4select in ${tablebean.columns.select}
+            if(bean${tablebean.name}.${column4insert.getter}() != null ){
+                coutColsWhere++;
+                ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+            }
+            @endfor
+
+            countDeleted = ps.executeUpdate();
+        } catch(Exception ex){
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+        return countDeleted;    
+    }
+
+    public int delete${tablebean.name}(Collection list${tablebean.name}) throws SetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int countDeleted  = -1;
+        StringBuffer sbQuery = null;
+        int coutColsWhere=-1;
+        
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            if(!wrapedIntoJTATransaction)
+                conn.setAutoCommit(false);
+            countDeleted  = 0;
+            for(Iterator iter${tablebean.name} = list${tablebean.name}.iterator(); iter${tablebean.name}.hasNext(); ) {
+                ${tablebean.name} bean${tablebean.name} = (${tablebean.name}) iter${tablebean.name}.next();
+                //----------------------------------------------------------------------
+                sbQuery =new StringBuffer("DELETE FROM ${tablebean.sql.name} WHERE ( 1=1 ");
+
+                @foreach column4select in ${tablebean.columns.select}
+                if(bean${tablebean.name}.${column4insert.getter}() != null ){
+                    sbQuery.append(" AND ${column4select.name} = ?");
+                }
+                @endfor
+                sbQuery.append(")");
+                ps = conn.prepareStatement(sbQuery.toString());
+                coutColsWhere=0;
+                @foreach column4select in ${tablebean.columns.select}
+                if(bean${tablebean.name}.${column4insert.getter}() != null ){
+                    coutColsWhere++;
+                    ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+                }
+                @endfor                
+                ps.executeUpdate();
+                countDeleted += ps.getUpdateCount();
+                sbQuery = null;
+            }
+            if(!wrapedIntoJTATransaction)
+                conn.commit();
+        } catch(Exception ex){
+            countDeleted = -1;
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            try{
+                if(!wrapedIntoJTATransaction)
+                    conn.rollback();
+            } catch(SQLException exRB){
+                exRB.printStackTrace();
+            }
+            throw new SetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+        return countDeleted;    
+    }
+
+    public int update${tablebean.name}(${tablebean.name} bean${tablebean.name}) throws SetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int countUpdated = -1;
+        StringBuffer sbQuery = new StringBuffer("UPDATE ${tablebean.sql.name} SET ");
+        int coutColsWhere= 0;
+
+        @foreach column4update in ${tablebean.columns.update.values}
+        if(bean${tablebean.name}.${column4update.getter}() != null ){
+            coutColsWhere++;
+            if(coutColsWhere>1)
+                sbQuery.append(", ");
+            sbQuery.append("${column4update.name} = ?");
+        }
+        @endfor        
+        sbQuery.append(" WHERE ( 1=1 ");
+        @foreach column4update in ${tablebean.columns.update.keys}
+        if(bean${tablebean.name}.${column4update.getter}() != null ){
+            sbQuery.append(" AND ");
+            sbQuery.append("${column4update.name} = ?");
+        }
+        @endfor
+        sbQuery.append(")");
+
+        int countInserted = -1;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            ps = conn.prepareStatement(sbQuery.toString());
+            // Setting the Values for the XXXCOLUMN = ? SET clausule
+            coutColsWhere=0;
+            @foreach column4update in ${tablebean.columns.update.values}
+            if(bean${tablebean.name}.${column4update.getter}() != null ){
+                coutColsWhere++;
+                ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+            }
+            @endfor
+            // Setting the Values for the Where XXXKEYCOLUMN = ? clausule
+            @foreach column4update in ${tablebean.columns.update.keys}
+            if(bean${tablebean.name}.${column4update.getter}() != null ){
+                coutColsWhere++;
+                ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+            }
+            @endfor
+
+            countUpdated = ps.executeUpdate();
+        } catch(Exception ex){            
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+        return countUpdated;
+    }
+   
+    public int update${tablebean.name}(Collection  list${tablebean.name}) throws SetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int countUpdated = -1;
+        int coutColsWhere= 0;
+        StringBuffer sbQuery = null;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            if(!wrapedIntoJTATransaction)
+                conn.setAutoCommit(false);
+            countUpdated = 0;
+            for(Iterator iter${tablebean.name} = list${tablebean.name}.iterator(); iter${tablebean.name}.hasNext(); ) {
+                ${tablebean.name} bean${tablebean.name} = (${tablebean.name}) iter${tablebean.name}.next();
+                //----------------------------------------------------------------------
+                sbQuery = new StringBuffer("UPDATE ${tablebean.sql.name} SET ");
+
+                coutColsWhere= 0;
+                @foreach column4update in ${tablebean.columns.update.values}
+                if(bean${tablebean.name}.${column4update.getter}() != null ){
+                    coutColsWhere++;
+                    if(coutColsWhere>1)
+                        sbQuery.append(", ");
+                    sbQuery.append("${column4update.name} = ?");
+                }
+                @endfor
+                sbQuery.append(" WHERE ( 1=1 ");                
+                @foreach column4update in ${tablebean.columns.update.keys}
+                if(bean${tablebean.name}.${column4update.getter}() != null ){
+                    sbQuery.append(" AND ");
+                    sbQuery.append("${column4update.name} = ?");
+                }
+                @endfor
+                sbQuery.append(")");
+                //----------------------------------------------------------------------
+
+                ps = conn.prepareStatement(sbQuery.toString());
+
+                // Setting the Values for the XXXCOLUMN = ? SET clausule
+                coutColsWhere=0;
+                @foreach column4update in ${tablebean.columns.update.values}
+                if(bean${tablebean.name}.${column4update.getter}() != null ){
+                    coutColsWhere++;
+                    ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+                }
+                @endfor
+                // Setting the Values for the Where XXXKEYCOLUMN = ? clausule
+                @foreach column4update in ${tablebean.columns.update.keys}
+                if(bean${tablebean.name}.${column4update.getter}() != null ){
+                    coutColsWhere++;
+                    ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+                }
+                @endfor
+                countUpdated += ps.executeUpdate();
+                sbQuery = null;                
+            }
+            if(!wrapedIntoJTATransaction)
+                conn.commit();
+        } catch(Exception ex){
+            countUpdated = -1;
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            try{
+                if(!wrapedIntoJTATransaction)
+                    conn.rollback();
+            } catch(SQLException exRB){
+                exRB.printStackTrace();
+            }
+            throw new SetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+        return countUpdated;
+    }
+
+
+    public ${tablebean.name} find${tablebean.name}(${tablebean.name} find${tablebean.name}) throws GetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet  rs = null;
+        ${tablebean.name} found${tablebean.name}= null;
+        StringBuffer sbQuery = new StringBuffer(
+                "SELECT ${tablebean.columns.select.list_cols}");
+        sbQuery.append(" ${tablebean.columns.select.list_fkrefscols} ");
+        sbQuery.append(" FROM ${tablebean.sql.name}");
+        sbQuery.append(" ${tablebean.list_fktables} ");
+        sbQuery.append(" WHERE ( 1=1 ");
+        sbQuery.append(" ${tablebean.fktables.join} ");
+        int coutColsWhere=-1;
+
+        @foreach column4select in ${tablebean.columns.select}
+        if(find${tablebean.name}.${column4insert.getter}() != null ){
+            sbQuery.append(" AND ${tablebean.sql.name}.${column4select.name} = ?");
+        }
+        @endfor
+        sbQuery.append(")");
+        int countInserted = -1;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection();
+            ps = conn.prepareStatement(sbQuery.toString());
+
+            coutColsWhere=0;
+            @foreach column4select in ${tablebean.columns.select}
+            if(find${tablebean.name}.${column4insert.getter}() != null ){
+                coutColsWhere++;
+                ps.${column4insert.ps.setter}(coutColsWhere,find${tablebean.name}.${column4insert.getter}());
+            }
+            @endfor
+
+            rs = ps.executeQuery();            
+            if(rs.next()){
+                found${tablebean.name}= new ${tablebean.name}();
+                @foreach column4select in ${tablebean.columns.select}
+                found${tablebean.name}.${column4insert.setter}(rs.${column4insert.rs.getter}("${column4select.name}"));                
+                @endfor
+                @foreach column4select in ${tablebean.fkcolumns}
+                found${tablebean.name}.${column.fkDecSetter}(${column.fkDecSetter.name});                                
+                @endfor                
+            }
+        } catch(Exception ex){
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new GetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(rs  != null) {
+                    rs.close();
+                }
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+        return found${tablebean.name};
+    }
+
+    public Collection select${tablebean.name}TO(${tablebean.name} bean${tablebean.name}) throws GetDataException{
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet  rs = null;
+        ArrayList arrList = null;
+        StringBuffer sbQuery = new StringBuffer(
+                "SELECT ${tablebean.columns.select.list_cols}");
+        sbQuery.append(" ${tablebean.columns.select.list_fkrefscols} ");
+        sbQuery.append(" FROM ${tablebean.sql.name}");
+        sbQuery.append(" ${tablebean.list_fktables} ");
+        sbQuery.append(" WHERE ( 1=1 ");
+        sbQuery.append(" ${tablebean.fktables.join} ");
+        int coutColsWhere=-1;
+
+        @foreach column4select in ${tablebean.columns.select}
+        if(bean${tablebean.name}.${column4insert.getter}() != null ){
+            sbQuery.append(" AND ${tablebean.sql.name}.${column4select.name} = ?");
+        }
+        @endfor
+        sbQuery.append(")");
+        int countInserted = -1;
+        try{
+            conn = ${rdbms.name}DAOFactory.getConnection(); 
+            ps = conn.prepareStatement(sbQuery.toString());
+
+            coutColsWhere=0;
+            @foreach column4select in ${tablebean.columns.select}
+            if(bean${tablebean.name}.${column4insert.getter}() != null ){
+                coutColsWhere++;
+                ps.${column4insert.ps.setter}(coutColsWhere,bean${tablebean.name}.${column4insert.getter}());
+            }
+            @endfor
+
+            rs = ps.executeQuery();
+            arrList = new ArrayList();
+            while(rs.next()){
+                bean${tablebean.name} = new ${tablebean.name}();
+                @foreach column4select in ${tablebean.columns.select}
+                bean${tablebean.name}.${column4insert.setter}(rs.${column4insert.rs.getter}("${column4select.name}"));                                
+                @endfor
+                @foreach column4select in ${tablebean.fkcolumns}
+                bean${tablebean.name}.${column.fkDecSetter}(${column.fkDecSetter.name});                                
+                @endfor
+                arrList.add(bean${tablebean.name});
+            }            
+        } catch(Exception ex){
+            Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new GetDataException(ex.getMessage());
+        } finally{
+            try{
+                if(rs  != null) {
+                    rs.close();
+                }
+                if(ps  != null) {
+                    ps.close();
+                }
+                if(conn  != null) {
+                    conn.close();
+                }
+            } catch(SQLException ex){
+                Logger.getLogger(${rdbms.name}${tablebean.name}DAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+        return arrList;    
+    }
+
+    public void setWrapedIntoJTATransaction(boolean wrapedIntoJTATransaction) {
+        this.wrapedIntoJTATransaction = wrapedIntoJTATransaction;
+    }
+
+    public boolean isWrapedIntoJTATransaction() {
+        return this.wrapedIntoJTATransaction;
+    }
+}

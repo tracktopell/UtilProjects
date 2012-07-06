@@ -1,0 +1,5 @@
+<Context	antiJARLocking="true" 
+			path="/calculator-ws-web"
+			reloadable="true" 
+			crossContext="true">
+</Context>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.xpressosystems.testws</groupId>
+    <artifactId>calculator-ws-parent</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>calculator-ws-client</artifactId>
+  <version>${parent.version}</version>
+  <name>Calculator Webservice With ApacheCXF_Spring_Maven - Client</name>
+
+  <!-- ======================== DEPENDENCIES ==================== -->
+
+  <dependencies>
+  <!-- ================= MAIN DEPENDENCIES ============ --> 
+    <dependency>
+      <groupId>com.xpressosystems.testws</groupId>
+      <artifactId>calculator-ws-commons</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+  <!-- ================= LIBRARY DEPENDENCIES ============ --> 
+    <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>com.springsource.slf4j.api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <!--
+      No Commons Logging -
+      Based on http://day-to-day-stuff.blogspot.com/2007/07/no-more-commons-logging.html
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+      <version>99.0-does-not-exist</version>
+      <scope>provided</scope>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+
+       <plugin>
+           <artifactId>maven-jar-plugin</artifactId>
+           <configuration>
+               <archive>
+                   <compress/>
+                   <manifest>
+                       <addClasspath>true</addClasspath>
+                       <mainClass>com.xpressosystems.testws.client.CalculatorServiceDynamicClient</mainClass>
+                       <classpathPrefix>lib/</classpathPrefix>
+                   </manifest>
+               </archive>
+          </configuration>
+       </plugin>
+       <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+              <executions>
+                 <execution>
+                    <phase>package</phase>
+                    <goals>
+                       <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                      <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+       <profile>
+           <id>Build4Run</id>
+           <build>
+               <plugins>
+                   <plugin>
+                       <artifactId>maven-dependency-plugin</artifactId>
+                           <executions>
+                               <execution>
+                                  <phase>package</phase>
+                                   <goals>
+                                       <goal>copy-dependencies</goal>
+                                   </goals>
+                                   <configuration>
+                                       <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                  </configuration>
+                                </execution>
+                           </executions>
+                   </plugin>
+               </plugins>
+           </build>
+       </profile>
+   </profiles>
+
+</project>

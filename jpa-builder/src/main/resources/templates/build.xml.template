@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<project name="TEMPLATE" default="compile_all" basedir=".">
+
+   <property name="src.home"                    location="${basedir}/src"/>
+   <property name="build.home"                  location="${basedir}/build"/>
+   <property name="lib.home"                    location="${basedir}/lib"/>   
+   
+   <path id="compile_classpath">      
+      <fileset dir="${lib.home}">
+         <include name="*.jar"/>
+      </fileset>      
+   </path>
+   
+
+   <target name="clean_classes"  description="clean up the classes dir" >   
+      <delete dir="${buld.home}"/>
+      <mkdir dir="${build.home}"/>      
+   </target>
+   
+   <target name="compile_all" description="Compile all packages" > 
+      <javac srcdir    = "${src.home}" 
+             destdir   = "${build.home}/classes" 
+             includes  = "**/**"
+             debug     = "on">
+         <classpath refid="compile_classpath"/>
+      </javac>
+   </target>
+</project>

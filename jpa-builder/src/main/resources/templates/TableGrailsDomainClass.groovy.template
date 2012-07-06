@@ -1,0 +1,29 @@
+package ${tablebean.package}
+
+import java.io.Serializable
+
+/**
+ * Class for mapping Grails Domain class of Table ${tablebean.name}.
+ * 
+ * @author Tracktopell::jpa-builder @see  http://tracktopell.dyndns.org/svn/xpressosystems/jpa-builder
+ * @version 0.1.1
+ * @date ${date}
+ */
+
+class ${tablebean.declaredName} implements Serializable {
+	${tablebean.simpleMember.declaration}
+
+	${tablebean.hasMany.declarations}
+
+	${tablebean.ManyToOneRelations.declarations}
+
+	${tablebean.ManyToManyRelations.declarations}
+
+	${tablebean.mappings}
+
+	${tablebean.constraints}
+
+	String toString() {
+		${tablebean.toStringCode}
+	}
+}

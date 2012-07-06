@@ -1,0 +1,63 @@
+/**
+ * ${rdbms.name}DAOFactory
+ *
+ * Created ${date}
+ *
+ * @author tracktopell :: DAO Builder
+ * http://www.tracktopell.com.mx
+ */
+
+package ${rdbms.daoFactory.package};
+
+import java.sql.*;
+import javax.sql.*;
+import java.io.*;
+import javax.naming.*;
+
+import ${dao.package}.*;
+
+public class ${rdbms.name}DAOFactory extends DAOFactory {
+    // ============= Methods for get Connection by standard way ================
+    
+    static final String jndiDBName = "${rdbms.jndi.name}";
+    
+    protected static DataSource   dataSource = null;
+    
+    /**
+     * @return The java.sql.Connection thought JNDI way, and works in J2EE Container  
+     */
+    
+    static Connection getConnection() 
+            throws  NamingException,
+                    SQLException{
+        if(dataSource == null){
+            InitialContext initialContext = null;
+            Context envContext            = null;
+            try {
+                // STANDAR LOOKUP MODE 
+                initialContext = new InitialContext();
+                envContext = (Context) initialContext.lookup ("java:comp/env");
+                dataSource = (DataSource) envContext.lookup(jndiDBName);
+            } catch(NamingException ex){
+                try {
+                    // WEBSPHERE LOOKUP MODE 
+                    initialContext = new InitialContext();
+                    dataSource = (DataSource) initialContext.lookup(jndiDBName);
+                } catch(NamingException ex2){
+                    throw ex2;
+                }
+            }
+        }
+        return dataSource.getConnection();
+    }
+    
+    // ============= Methods for get Concrete DAOs ================    
+    @foreach tablebean in ${tablebeans}        
+    /** 
+     * @return ${rdbms.name} Concrete DAO for ${tablebean.name}.
+     */
+    public ${tablebean.name}DAO get${tablebean.name}DAO() {
+        return new ${rdbms.name}${tablebean.name}DAO();
+    }    
+    @endfor
+}

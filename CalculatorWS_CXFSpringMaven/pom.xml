@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    <groupId>com.xpressosystems.testws</groupId>
+    <artifactId>calculator-ws-parent</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Calculator Webservice With ApacheCXF_Spring_Maven - Parent</name>
+
+  <inceptionYear>2011</inceptionYear>
+
+  <organization>
+    <name>xpressosystems</name>
+    <url>http://xpressosystems.com</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>xpressosystems</id>
+      <name>Alfredo Estrada</name>
+      <email>alfredo.estrada@xpressosystems.com</email>
+      <organization>xpressosystems</organization>
+      <organizationUrl>http://xpressosystems.com</organizationUrl>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+        <role>Deployer</role>
+      </roles>
+      <timezone>-6</timezone>
+    </developer>
+  </developers>
+
+  
+  <properties>
+    <spring.version>3.0.1.RELEASE</spring.version>
+    <slf4j.version>1.5.10</slf4j.version>
+    <logback.version>0.9.15</logback.version>
+    <junit.version>4.8.1</junit.version>
+    <cxf.version>2.3.2</cxf.version>
+
+    <maven.build.timestamp.format>yyyy/MM/dd_HH:mm</maven.build.timestamp.format>
+    <project_maven_version>${maven.build.timestamp}</project_maven_version>
+
+  </properties>
+  
+  <modules>
+    <module>calculator-ws-commons</module>
+    <module>calculator-ws-web</module>    
+    <module>calculator-ws-client</module>
+  </modules>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <junitArtifactName>org.junit:com.springsource.org.junit</junitArtifactName>
+          <forkMode>pertest</forkMode>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit</groupId>
+      <artifactId>com.springsource.org.junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+  <licenses>
+    <license>
+      <name>XPRESSO SYSTEMS PRIVATE LICENSE</name>
+      <url>http://xpressosystems.com/licenses/LICENSE-1.0</url>
+    </license>
+  </licenses>
+
+  <repositories>
+
+    <repository>
+      <id>com.springsource.repository.bundles.release</id>
+      <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+      <url>http://repository.springsource.com/maven/bundles/release</url>
+    </repository>
+    <repository>
+      <id>com.springsource.repository.bundles.external</id>
+      <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+      <url>http://repository.springsource.com/maven/bundles/external</url>
+    </repository> 
+    <repository>
+      <id>spring.maven.milestone</id>
+      <name>Spring Milestone Maven Repo</name>
+      <url>http://repository.springsource.com/maven/bundles/milestone</url>
+    </repository>
+
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/1</url>
+      <layout>legacy</layout>
+    </repository>
+
+    <repository>
+      <id>repository-jboss-maven2</id>
+      <url>http://repository.jboss.com/maven2</url>
+    </repository>
+    <repository>
+      <id>repository-jboss-nexus</id>
+      <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>snapshots.jboss.org</id>
+      <name>Snapshot Jboss Repository for Maven</name>
+      <url>http://snapshots.jboss.org/maven2/</url>
+      <layout>default</layout>
+    </repository>
+
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>repository.jboss.com</id>
+      <name>Jboss Repository for Maven</name>
+      <url>http://repository.jboss.com/maven2/</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+
+</project>

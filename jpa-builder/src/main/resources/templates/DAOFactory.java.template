@@ -1,0 +1,43 @@
+/**
+ * DAOFactory
+ *
+ * Created ${date}
+ *
+ * @author tracktopell :: DAO Builder
+ * http://www.tracktopell.com.mx
+ */
+
+package ${dao.package};
+
+public abstract class DAOFactory {
+    // List of DAO types supported by the factory
+    @foreach rdbms in ${rdbmsSouported.names} 
+    ${rdbms.id.declaration}
+    @endfor
+
+    // All DAOs
+    @foreach tablebean in ${tablebeans}
+
+    /** 
+     * @return DAO for : ${tablebean.name}
+     */
+    public abstract ${tablebean.name}DAO get${tablebean.name}DAO();
+    @endfor
+    
+    protected DAOFactory(){ }
+    
+    public static DAOFactory getDefaultDAOFactory() {
+        // Shuld return the dhefault Factory without choice
+        throw new java.lang.UnsupportedOperationException();
+    }
+
+    public static DAOFactory getDAOFactory(int whichFactory) {
+        switch (whichFactory) {        
+        @foreach rdbms in ${rdbmsSouported.names} 
+        case ${rdbms.id} : 
+            return new ${rdbms.daoFactory.class}();
+        @endfor
+        }
+        return null;
+    }
+}

@@ -1,0 +1,61 @@
+
+package ${tablebean.package};
+
+/**
+ * Class for mapping Table ${tablebean.name}
+ * 
+ * @author Tracktopell::DAOBuilder http://www.tracktopell.com.mx
+ * @version 1.0
+ * @date ${date}
+ */
+
+public class ${tablebean.name} implements java.io.Serializable {
+    
+    private static final long serialVersionUID = ${tablebean.serialId};
+
+    %foreach tablebean.member in ${tablebean.members}
+    ${tablebean.member.javadocCommnet}    
+    ${tablebean.member.declaration}
+
+    %endfor
+    /** Default Constructor */
+    public ${tablebean.name}() {
+    }    
+    %foreach tablebean.member in ${tablebean.members}
+
+    /**
+     * 
+     */
+    ${tablebean.member.getter}
+
+    /**
+     * 
+     */
+
+    ${tablebean.member.setter}    
+
+    %endfor
+    /**
+     * 
+     */    
+    public boolean equals(Object o){    
+    	${tablebean.name} po = (${tablebean.name})o;
+    	
+    	return 	
+        @foreach tablebean.member in ${tablebean.members}
+                this.${tablebean.member_getter}.equals(po.${tablebean.member_getter}) &&                
+        @endfor
+                true ;    	
+    }
+
+    /**
+     * 
+     */
+    public int hashCode() {
+        return 	
+        @foreach tablebean.member in ${tablebean.members}
+                this.${tablebean.member_getter}.hashCode() +
+        @endfor
+                0 ;    	
+    }
+}

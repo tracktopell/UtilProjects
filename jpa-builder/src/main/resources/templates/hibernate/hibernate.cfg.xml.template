@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 2.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-2.0.dtd">
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration. -->
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- DataSource connection properties -->
+        <property name="connection.datasource">java:/comp/env/${rdbms.jndi.name}</property>
+
+        <!-- Direct Conenction JDBC properties 
+        <property name="connection.url"></property>
+        <property name="connection.driver_class"></property>
+        <property name="connection.username"></property>
+        <property name="connection.password"></property>
+        -->
+        <property name="dialect">net.sf.hibernate.dialect.${hibernate.dialect}</property>
+
+        <!-- mapping java beans -->
+        <!-- table.mapping.start -->
+        <mapping resource="${hibernate.desdir.hbm}/${table.name}.xml" />
+        <!-- table.mapping.end -->
+    </session-factory>
+</hibernate-configuration>

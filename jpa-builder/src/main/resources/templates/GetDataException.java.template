@@ -1,0 +1,17 @@
+/**
+ * GetDataException
+ *
+ * Created ${date}
+ *
+ * @author tracktopell :: DAO Builder
+ * http://www.tracktopell.com.mx
+ */
+
+package ${dao.package};
+
+public class GetDataException extends     DataAccessException
+                              implements  java.io.Serializable {
+    public GetDataException(String description){
+        super(description);
+    }
+}

@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>${table.name}</title>
+    </head>
+    <body>
+    <table border="1">        
+        <tr>
+<!-- ${columns.header.start} -->        
+            <td>${column.name}</td>
+<!-- ${columns.header.end} -->            
+        </tr>
+<!-- ${columns.body.start} -->
+        <tr>
+            <td>${column.value}</td>
+        </tr>                
+<!-- ${columns.body.end} -->
+    </table>
+    </body>
+</html>

@@ -1,0 +1,46 @@
+/**
+ * ${tablebean.name}DAO
+ *
+ * Created ${date}
+ *
+ * @author tracktopell :: DAO Builder
+ * http://www.tracktopell.com.mx
+ */
+
+package ${dao.package};
+
+import javax.sql.RowSet;
+import java.util.Collection;
+
+import ${tablebean.package}.*;
+
+public interface ${tablebean.name}DAO {
+    
+    public int insert${tablebean.name}(${tablebean.name} bean${tablebean.name}) throws SetDataException;
+
+    public int insert${tablebean.name}(Collection<${tablebean.name}> list${tablebean.name})  throws   SetDataException;
+
+    public int delete${tablebean.name}(${tablebean.name} bean${tablebean.name})  throws SetDataException;
+
+    public int delete${tablebean.name}(Collection<${tablebean.name}> list${tablebean.name}) throws SetDataException;
+
+    public int update${tablebean.name}(${tablebean.name} bean${tablebean.name})  throws SetDataException;
+
+    public int update${tablebean.name}(Collection<${tablebean.name}> list${tablebean.name}) throws SetDataException;
+
+    public ${tablebean.name} find${tablebean.name}(${tablebean.name} bean${tablebean.name}) throws GetDataException;
+
+    public Collection<${tablebean.name}> select${tablebean.name}TO(${tablebean.name} bean${tablebean.name})  throws GetDataException;
+
+    /**
+     * Specific DAO must implement this method for indicate when the transaction 
+     * managment is outer bouds of this calling contex, by example used into EJB transaction.
+     */
+    public void setWrapedIntoJTATransaction(boolean wrapedIntoJTATransaction);
+
+    /**
+     * Indicate when the transaction managment is outer bouds of this calling 
+     * contex, by example used into EJB transaction.
+     */
+    public boolean isWrapedIntoJTATransaction();
+}
