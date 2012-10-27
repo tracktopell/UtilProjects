@@ -20,7 +20,7 @@ public class VPModel2JPA {
         try {
 
             if( args.length != 5) {
-                System.err.print("use: <java ...> VPModel2JPA  pathToVPProject  schemmaName  packageBeanMember  basePath   tableNames2GenList,Separated,By,Comma" );
+                System.err.println("use: <java ...> VPModel2JPA  pathToVPProject  schemmaName  packageBeanMember  basePath   tableNames2GenList,Separated,By,Comma" );
                 System.exit(1);
             }
 

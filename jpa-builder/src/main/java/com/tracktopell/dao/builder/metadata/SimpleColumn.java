@@ -22,6 +22,7 @@ public class SimpleColumn implements Column{
     private boolean foreignKey;    
     private boolean nullable;
     private boolean foreignDescription;
+    private boolean toStringConcatenable;
     private int precision;
     private int scale;
     private int position;
@@ -231,4 +232,18 @@ public class SimpleColumn implements Column{
 		return	javaClassType.equals("int") || javaClassType.equals("java.lang.Integer") ||
 				javaClassType.equals("long") || javaClassType.equals("java.lang.Long");
 	}
+
+    /**
+     * @return the toStringConcatenable
+     */
+    public boolean isToStringConcatenable() {
+        return toStringConcatenable;
+    }
+
+    /**
+     * @param toStringConcatenable the toStringConcatenable to set
+     */
+    public void setToStringConcatenable(boolean toStringConcatenable) {
+        this.toStringConcatenable = toStringConcatenable;
+    }
 }

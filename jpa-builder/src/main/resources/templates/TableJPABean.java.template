@@ -32,8 +32,8 @@ import javax.persistence.TemporalType;
 /**
  * Class for mapping JPA Entity of Table ${tablebean.name}.
  * 
- * @author Tracktopell::jpa-builder @see  http://tracktopell.dyndns.org/svn/xpressosystems/jpa-builder
- * @version 0.8.1
+ * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
+ * @version 0.8.5
  * @date ${date}
  */
 

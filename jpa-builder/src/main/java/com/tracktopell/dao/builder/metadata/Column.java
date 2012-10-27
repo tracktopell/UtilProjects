@@ -85,5 +85,9 @@ public interface Column {
     
     void setJavaDeclaredName(String javaDeclaredName);
 
-	public boolean isIntegerJavaType();
+    public boolean isIntegerJavaType();
+
+    public void setToStringConcatenable(boolean b);
+    
+    public boolean isToStringConcatenable();
 }

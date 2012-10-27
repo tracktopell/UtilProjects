@@ -219,6 +219,8 @@ public class VP6Parser {
                                 String[] keyValueProp = prp.trim().split("=");
                                 if(keyValueProp[0].trim().equals("foreignDescription") && keyValueProp[1].trim().equals("true")){
                                     currentColumn.setForeignDescription(true);
+                                } else if(keyValueProp[0].trim().equals("toStringConcatenable") && keyValueProp[1].trim().equals("true")){
+                                    currentColumn.setToStringConcatenable(true);
                                 } else if(keyValueProp[0].trim().equals("label")){
                                     currentColumn.setLabel(keyValueProp[1].trim());
                                 } 
