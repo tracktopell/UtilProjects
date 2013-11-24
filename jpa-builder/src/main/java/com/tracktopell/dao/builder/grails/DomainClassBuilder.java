@@ -388,7 +388,7 @@ public class DomainClassBuilder {
 					line = line.replace("${tablebean.name}", table.getName());
 					line = line.replace("${tablebean.declaredName}", table.getJavaDeclaredName());
 
-					line = line.replace("${tablebean.toStringCode}", table.getToStringCode(packageBeanMember));
+					line = line.replace("${tablebean.toStringCode}", table.getToStringCode(dbSet,packageBeanMember));
 					line = line.replace("${tablebean.constraints}", generateTableConstraints(table));
 					line = line.replace("${tablebean.package}", packageBeanMember);
 					ps.println(line);

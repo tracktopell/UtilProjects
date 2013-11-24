@@ -151,70 +151,72 @@ public class DTOBeanBuilder {
                                 if (table.isManyToManyTableWinthMoreColumns()) {
 
                                     if (column instanceof EmbeddeableColumn) {
-//                                        ps.println("    @EmbeddedId");                                        
+                                        //ps.println("    @EmbeddedId");                                        
                                         ps.println("    private " + column.getJavaClassType().replace("java.lang.", "")
                                                 + " " + column.getJavaDeclaredObjectName() + ";");
                                     } else if (fTable != null) {                                        
                                         //refObjFK = FormatString.getCadenaHungara(fTable.getName());
-//                                        ps.println("    @JoinColumn(name = \"" + column.getName().toUpperCase()
-//                                                + "\" , referencedColumnName = \"" + table.getFKReferenceTable(column.getName()).getColumnName().toUpperCase() + "\", "
-//                                                + " insertable = false, updatable = false)");                                        
-//                                        ps.println("    @ManyToOne(optional = " + column.isNullable() + ")");
-//                                        //ps.println("    private " + refObjFK + " " + FormatString.firstLetterLowerCase(refObjFK) + ";");
+                                        //ps.println("    @JoinColumn(name = \"" + column.getName().toUpperCase()
+                                        //        + "\" , referencedColumnName = \"" + table.getFKReferenceTable(column.getName()).getColumnName().toUpperCase() + "\", "
+                                        //        + " insertable = false, updatable = false)");                                        
+                                        //ps.println("    @ManyToOne(optional = " + column.isNullable() + ")");
+										//ps.println("    private " + refObjFK + " " + FormatString.firstLetterLowerCase(refObjFK) + ";");
                                         ps.println("    private " + fTable.getJavaDeclaredName() + " " + fTable.getJavaDeclaredObjectName() + ";");
                                     } else {
-//                                        ps.println("    @Basic(optional = " + column.isNullable() + ")");
-//                                        ps.println("    @Column(name = \"" + column.getName().toUpperCase() + "\")");
-//                                        //if(column.getJavaClassType().equals("java.util.Date")){
-//                                        if(column.getSqlType().toLowerCase().equals("timestamp") || column.getSqlType().toLowerCase().equals("datetime")){
-//                                            ps.println("    @Temporal(TemporalType.TIMESTAMP)");
-//                                        } 
+                                        //ps.println("    @Basic(optional = " + column.isNullable() + ")");
+                                        //ps.println("    @@ManyToOneColumn(name = \"" + column.getName().toUpperCase() + "\")");
+                                        //if(column.getJavaClassType().equals("java.util.Date")){
+                                        if(column.getSqlType().toLowerCase().equals("timestamp") || column.getSqlType().toLowerCase().equals("datetime")){
+                                            //ps.println("    @Temporal(TemporalType.TIMESTAMP)");
+                                        } 
                                         ps.println("    private " + column.getJavaClassType().replace("java.lang.", "")
                                                 + " " + column.getJavaDeclaredObjectName() + ";");
                                     }
                                 } else {
                                     if (column.isPrimaryKey() && !column.isForeignKey()) {
                                         if (column instanceof EmbeddeableColumn) {
-//                                            ps.println("    @EmbeddedId");
+                                            //ps.println("    @EmbeddedId");
                                         } else {
                                             if(! (table instanceof EmbeddeableColumn)){
-//                                                ps.println("    @Id");
+                                                //ps.println("    @Id");
                                             }
-//                                            ps.println("    @Basic(optional = false)");
-//                                            ps.println("    @Column(name = \"" + column.getName().toUpperCase() + "\")");
-//                                            if (column.isAutoIncremment()) {
-//                                                //ps.println("    @GeneratedValue(strategy=GenerationType.IDENTITY)");
-//                                                ps.println("    @GeneratedValue(strategy=GenerationType.AUTO)");
-//                                            }
+                                            //ps.println("    @Basic(optional = false)");
+                                            //ps.println("    @Column(name = \"" + column.getName().toUpperCase() + "\")");
+                                            if (column.isAutoIncremment()) {
+                                                //ps.println("    @GeneratedValue(strategy=GenerationType.IDENTITY)");
+                                                //ps.println("    @GeneratedValue(strategy=GenerationType.AUTO)");
+                                            }
                                         }
                                         if(column.getJavaClassType().equals("java.util.Date")){
-//                                            ps.println("    @Temporal(TemporalType.TIMESTAMP)");
+                                            //ps.println("    @Temporal(TemporalType.TIMESTAMP)");
                                         } else if(column.getJavaClassType().equals("java.util.Calendar")){
-//                                            ps.println("    @Temporal(TemporalType.DATE)");
+                                            //ps.println("    @Temporal(TemporalType.DATE)");
                                         }
                                         ps.println("    private " + column.getJavaClassType().replace("java.lang.", "")
                                                 + " " + column.getJavaDeclaredObjectName() + ";");
                                     } else{ 
                                         if (fTable != null) {
                                             
-//                                            //ps.println("    // (insertable = false, updatable = false) FIX ?"+table.hasEmbeddedPK()+" && "+column.isPrimaryKey());
-//                                            ps.print("    @JoinColumn(name = \"" + column.getName().toUpperCase() + "\" , referencedColumnName = \"" + table.getFKReferenceTable(column.getName()).getColumnName().toUpperCase() + "\"");
-//                                            if (table.hasEmbeddedPK() && column.isPrimaryKey()) {
-//                                                ps.println(", insertable = false, updatable = false)");
-//                                            } else {
-//                                                ps.println(")");
-//                                            }
-//                                            ps.println("    @ManyToOne(optional = " + column.isNullable() + ")");
-                                            //ps.println("    private " + refObjFK + " " + FormatString.firstLetterLowerCase(refObjFK) + ";");
-                                            ps.println("    private " + fTable.getJavaDeclaredName() + " " + fTable.getJavaDeclaredObjectName() + ";");
+                                            //ps.println("    // (insertable = false, updatable = false) FIX ?"+table.hasEmbeddedPK()+" && "+column.isPrimaryKey());
+                                            //ps.print("    @JoinColumn(name = \"" + column.getName().toUpperCase() + "\" , referencedColumnName = \"" + table.getFKReferenceTable(column.getName()).getColumnName().toUpperCase() + "\"");
+                                            if (table.hasEmbeddedPK() && column.isPrimaryKey()) {
+                                                //ps.println(", insertable = false, updatable = false)");
+                                            } else {
+                                                //ps.println(")");
+                                            }
+                                            //ps.println("    @ManyToOne(optional = " + column.isNullable() + ")");
+											
+											int ccrfk=0;
+											ccrfk=table.countReferencesToTable(fTable.getName());											
+											ps.println("    private " + fTable.getJavaDeclaredName() + " " + ((ccrfk>1)?FormatString.renameForJavaMethod(column.getName()):fTable.getJavaDeclaredObjectName()) + ";");
                                         } else {
-//                                            ps.println("    @Basic(optional = " + column.isNullable() + ")");
-//                                            ps.println("    @Column(name = \"" + column.getName().toUpperCase() + "\")");
-//                                            if(column.getJavaClassType().equals("java.util.Date")){
-//                                                ps.println("    @Temporal(TemporalType.TIMESTAMP)");
-//                                            } else if(column.getJavaClassType().equals("java.util.Calendar")){
-//                                                ps.println("    @Temporal(TemporalType.DATE)");
-//                                            }
+                                            //ps.println("    @Basic(optional = " + column.isNullable() + ")");
+                                            //ps.println("    @Column(name = \"" + column.getName().toUpperCase() + "\")");
+                                            if(column.getJavaClassType().equals("java.util.Date")){
+                                                //ps.println("    @Temporal(TemporalType.TIMESTAMP)");
+                                            } else if(column.getJavaClassType().equals("java.util.Calendar")){
+                                                //ps.println("    @Temporal(TemporalType.DATE)");
+                                            }
                                             ps.println("    private " + column.getJavaClassType().replace("java.lang.", "")
                                                     + " " + column.getJavaDeclaredObjectName() + ";");
                                         }
@@ -229,13 +231,22 @@ public class DTOBeanBuilder {
                                     if (table instanceof EmbeddeableColumn) {
                                         refObjFK = column.getJavaClassType().replace("java.lang.", "");
                                     } 
-
-                                    ps.println("    public " + refObjFK + " get" + fTable.getJavaDeclaredName() + "() {");
-                                    if (table instanceof EmbeddeableColumn && column.isForeignKey()) {
-                                        ps.println("        return this." + column.getJavaDeclaredObjectName() + ";");
-                                    } else {
-                                        ps.println("        return this." + fTable.getJavaDeclaredObjectName() + ";");
-                                    }
+									
+									int ccrfk=0;
+									ccrfk=table.countReferencesToTable(fTable.getName());
+									
+									String finalyVarName = null;
+									String finalyXetterName = null;
+									
+									if (table instanceof EmbeddeableColumn && column.isForeignKey()) {
+										finalyVarName = column.getJavaDeclaredObjectName();										
+									}else{
+										finalyVarName = ((ccrfk>1)?FormatString.renameForJavaMethod(column.getName()):fTable.getJavaDeclaredObjectName());										
+									}
+									finalyXetterName = "et"+FormatString.firstLetterUpperCase(finalyVarName);
+									
+									ps.println("    public " + refObjFK +" g" + finalyXetterName+ " () {");                                    
+									ps.println("        return this." + finalyVarName + ";");
                                     ps.println("    }");
                                 } else {
                                     ps.println("    public " + column.getJavaClassType().replace("java.lang.", "")
@@ -251,14 +262,22 @@ public class DTOBeanBuilder {
                                     if (table instanceof EmbeddeableColumn) {
                                         refObjFK = column.getJavaClassType().replace("java.lang.", "");
                                     }
-
-                                    ps.println("    public void set" + fTable.getJavaDeclaredName() + "(" + refObjFK + " v) {");
-                                    
-                                    if (table instanceof EmbeddeableColumn && column.isForeignKey()) {
-                                        ps.println("        this." + column.getJavaDeclaredObjectName() + " = v;");
-                                    } else {
-                                        ps.println("        this." + fTable.getJavaDeclaredObjectName()+ " = v;");
-                                    }
+									
+									int ccrfk=0;
+									ccrfk=table.countReferencesToTable(fTable.getName());
+									
+									String finalyVarName = null;
+									String finalyXetterName = null;
+									
+									if (table instanceof EmbeddeableColumn && column.isForeignKey()) {
+										finalyVarName = column.getJavaDeclaredObjectName();										
+									}else{
+										finalyVarName = ((ccrfk>1)?FormatString.renameForJavaMethod(column.getName()):fTable.getJavaDeclaredObjectName());										
+									}
+									finalyXetterName = "et"+FormatString.firstLetterUpperCase(finalyVarName);
+									
+									ps.println("    public void s" + finalyXetterName+ "(" + refObjFK + " v) {");                                    
+									ps.println("        this." + finalyVarName + " = v;");
                                     ps.println("    }");
                                 } else {
                                     ps.println("    public void set" + FormatString.getCadenaHungara(column.getName())
@@ -277,9 +296,23 @@ public class DTOBeanBuilder {
                     linesToParse.add(line);
                 } else if (line.indexOf("${tablebean.oneToManyRelations.declarations}") >= 0) {
                     for (Table posibleTableOneToMany : tablesForGeneration) {
-                        Collection<ReferenceTable> fKReferenceTables4OneToMany = posibleTableOneToMany.getFKReferenceTables();
-                        for (ReferenceTable rt4OneToMany : fKReferenceTables4OneToMany) {
-                            if (rt4OneToMany.getTableName().equals(table.getName())
+						Enumeration<String> fkColumnNames = posibleTableOneToMany.getFKColumnNames();						
+						int sameTableTargetFK = 0 ;
+						while(fkColumnNames.hasMoreElements()){
+							String columnNameFK = fkColumnNames.nextElement();
+							ReferenceTable rt4OneToMany = posibleTableOneToMany.getFKReferenceTable(columnNameFK);
+
+							if (rt4OneToMany.getTableName().equals(table.getName())
+                                    && !FormatString.getCadenaHungara(posibleTableOneToMany.getName()).endsWith("PK")) {
+								sameTableTargetFK++;
+							}
+						}
+						fkColumnNames = posibleTableOneToMany.getFKColumnNames();
+						while(fkColumnNames.hasMoreElements()){
+							String columnNameFK = fkColumnNames.nextElement();
+							ReferenceTable rt4OneToMany = posibleTableOneToMany.getFKReferenceTable(columnNameFK);
+
+							if (rt4OneToMany.getTableName().equals(table.getName())
                                     && !FormatString.getCadenaHungara(posibleTableOneToMany.getName()).endsWith("PK")) {
 
                                 String tableReferenceOneToMany = "null";
@@ -290,32 +323,54 @@ public class DTOBeanBuilder {
                                         tableReferenceOneToMany = FormatString.renameForJavaMethod(posibleTableOneToMany.getFKReferenceTable(cfk.getName()).getTableName());
                                     }
                                 }
-
-                                ps.println("    ");
-//                                ps.println("    @OneToMany(cascade = CascadeType.ALL, mappedBy = \"" + tableReferenceOneToMany + "\")");
-                                ps.println("    private " + collectionClass + "<" + FormatString.getCadenaHungara(posibleTableOneToMany.getName()) + "> " + FormatString.renameForJavaMethod(posibleTableOneToMany.getName()) + collectionClass + ";");
+								String posibleOneToManyMamber = FormatString.renameForJavaMethod(posibleTableOneToMany.getName()) + collectionClass;
+								String fkReferencedMemberName = rt4OneToMany.getTableName()+"_"+rt4OneToMany.getColumnName();
+								String realSugestedCollectionName = (!columnNameFK.equals(fkReferencedMemberName) && sameTableTargetFK>1)?
+										FormatString.renameForJavaMethod(posibleTableOneToMany.getName()+"_To_"+columnNameFK+"_"+ collectionClass):
+										posibleOneToManyMamber;
+                                
+								ps.println("    ");
+                                //ps.println("    @OneToMany(cascade = CascadeType.ALL, mappedBy = \"" + tableReferenceOneToMany + "\")");
+                                ps.println("    private " + collectionClass + "<" + FormatString.getCadenaHungara(posibleTableOneToMany.getName()) + "> " + realSugestedCollectionName + ";");
                                 ps.println("    ");
                             }
                         }
                     }
                 } else if (line.indexOf("${tablebean.oneToManyRelations.gettersAndSetters}") >= 0) {
                     for (Table posibleTableOneToMany : tablesForGeneration) {
-                        Collection<ReferenceTable> fKReferenceTables4OneToMany = posibleTableOneToMany.getFKReferenceTables();
-                        for (ReferenceTable rt4OneToMany : fKReferenceTables4OneToMany) {
+						Enumeration<String> fkColumnNames = posibleTableOneToMany.getFKColumnNames();						
+						int sameTableTargetFK = 0 ;
+						while(fkColumnNames.hasMoreElements()){
+							String columnNameFK = fkColumnNames.nextElement();
+							ReferenceTable rt4OneToMany = posibleTableOneToMany.getFKReferenceTable(columnNameFK);
+
+							if (rt4OneToMany.getTableName().equals(table.getName())
+                                    && !FormatString.getCadenaHungara(posibleTableOneToMany.getName()).endsWith("PK")) {
+								sameTableTargetFK++;
+							}
+						}
+						fkColumnNames = posibleTableOneToMany.getFKColumnNames();
+						while(fkColumnNames.hasMoreElements()){
+							String columnNameFK = fkColumnNames.nextElement();
+							ReferenceTable rt4OneToMany = posibleTableOneToMany.getFKReferenceTable(columnNameFK);
                             if (rt4OneToMany.getTableName().equals(table.getName())
                                     && !FormatString.getCadenaHungara(posibleTableOneToMany.getName()).endsWith("PK")) {
                                 Table fTable = dbSet.getTable(posibleTableOneToMany.getName());
-                                //String refObjFK = FormatString.getCadenaHungara(fTable.getName());
+								String posibleOneToManyMamber = posibleTableOneToMany.getName() + "_"+ collectionClass;
+								String fkReferencedMemberName = rt4OneToMany.getTableName()+"_"+rt4OneToMany.getColumnName();
+								String realSugestedCollectionName = (!columnNameFK.equals(fkReferencedMemberName) && sameTableTargetFK>1)?
+										posibleTableOneToMany.getName()+"_To_"+columnNameFK+"_"+ collectionClass:
+										posibleOneToManyMamber;
+								
+								//ps.println("    /* "+FormatString.renameForJavaMethod("Get_"+realSugestedCollectionName)+" & "+FormatString.renameForJavaMethod("Set_"+realSugestedCollectionName)+"*/");
                                 ps.println("    ");
-                                ps.println("    public " + collectionClass + "<" + FormatString.getCadenaHungara(posibleTableOneToMany.getName()) + "> get" + fTable.getJavaDeclaredName() + collectionClass + "() {");
-                                //ps.println("        return this." + FormatString.firstLetterLowerCase(refObjFK) + collectionClass + ";");
-                                ps.println("        return this." + fTable.getJavaDeclaredObjectName() + collectionClass + ";");
+                                ps.println("    public " + collectionClass + "<" + FormatString.getCadenaHungara(posibleTableOneToMany.getName()) + "> "+FormatString.renameForJavaMethod("Get_"+realSugestedCollectionName)+ "() {");
+                                ps.println("        return this." + FormatString.renameForJavaMethod(realSugestedCollectionName) + ";");
                                 ps.println("    }");
                                 ps.println("    ");
                                 ps.println("    ");
-                                ps.println("    public void set" + fTable.getJavaDeclaredName() + collectionClass + "(" + collectionClass + "<" + FormatString.getCadenaHungara(posibleTableOneToMany.getName()) + ">  v) {");
-                                //ps.println("        this." + FormatString.firstLetterLowerCase(refObjFK) + collectionClass + " = v;");
-                                ps.println("        this." + fTable.getJavaDeclaredObjectName() + collectionClass + " = v;");
+                                ps.println("    public void "+FormatString.renameForJavaMethod("Set_"+realSugestedCollectionName) + "(" + collectionClass + "<" + FormatString.getCadenaHungara(posibleTableOneToMany.getName()) + ">  v) {");
+                                ps.println("        this." + FormatString.renameForJavaMethod(realSugestedCollectionName) + " = v;");
                                 ps.println("    }");
                             }
                         }
@@ -388,7 +443,7 @@ public class DTOBeanBuilder {
                     line = line.replace("${tablebean.hashCodeSumCode}", table.getHashCodeSumCode());
                     line = line.replace("${tablebean.PKMembersParametersInitCode}", membersParametersInitCode(table,dbSet));
                     line = line.replace("${tablebean.equalsCode}", table.getEqualsCode());
-                    line = line.replace("${tablebean.toStringCode}", table.getToStringCode(packageBeanMember));
+                    line = line.replace("${tablebean.toStringCode}", table.getToStringCode(dbSet,packageBeanMember));
                     line = line.replace("${tablebean.name.uc}", table.getName().toUpperCase());                    
                     line = line.replace("${tablebean.package}", packageBeanMember);
                     ps.println(line);

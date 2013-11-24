@@ -24,10 +24,29 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Enumeration;
 
-public class VP6Parser {
-    private VP6Parser() {
+public class VP6ParserForXpressoSystems {
+    private VP6ParserForXpressoSystems() {
     }
-    
+	
+	private static void parseProperties(String Documentation_plain, Hashtable<String, String> properties) {
+		Documentation_plain = Documentation_plain.replace("&#10;", "\r\n");
+		Documentation_plain = Documentation_plain.replace("&quot;", "\"");
+		
+		//System.out.println(Documentation_plain);
+		
+		int indexBegin = 0;
+		for(indexBegin = Documentation_plain.indexOf("@", indexBegin);indexBegin>=0;indexBegin = Documentation_plain.indexOf("@", indexBegin+1)){			
+			int indexEqual = Documentation_plain.indexOf("=\"", indexBegin+1);
+			int indexEndValue = Documentation_plain.indexOf("\"", indexEqual+2);
+			
+			String key = Documentation_plain.substring(indexBegin+1,indexEqual);
+			String value = Documentation_plain.substring(indexEqual+2,indexEndValue);
+		
+			properties.put(key, value);
+			
+			//System.out.println("->"+key+" = "+value);
+		}
+	}    
     public static Hashtable<String,VPModel> loadVPModels(InputStream is){
         DefaultHandler handler = new VPModelScanner();
         try {
@@ -96,7 +115,7 @@ public class VP6Parser {
                         attributes.getValue("name").equals("documentation") &&
                         attributes.getValue("plainTextValue")!=null &&
                         attributes.getValue("plainTextValue").trim().length()>0) {
-                    vpm.setDocumentation(attributes.getValue("plainTextValue"));
+                    vpm.setDocumentation(attributes.getValue("plainTextValue"));					
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -186,6 +205,12 @@ public class VP6Parser {
                     currentTable.setName(attributes.getValue("name"));
                     try{
                         if(this.vpModels.get(attributes.getValue("id")).getDocumentation() != null) {
+							Hashtable<String, String> properties=new Hashtable<String, String>();
+							
+							parseProperties(this.vpModels.get(attributes.getValue("id")).getDocumentation(), properties);
+							currentTable.setMetaProperties(properties);
+							
+							/*
                             String[] props = this.vpModels.get(attributes.getValue("id")).getDocumentation().split(";");
                             for(String prp: props) {
                                 String[] keyValueProp = prp.trim().split("=");
@@ -194,7 +219,8 @@ public class VP6Parser {
                                 } else if(keyValueProp[0].trim().equals("label")){
                                     currentTable.setLabel(keyValueProp[1].trim());
                                 }
-                            }                        
+                            } 
+							*/                       
                         }
                     } catch (Exception ex){
                         ex.printStackTrace(System.err);
@@ -214,6 +240,12 @@ public class VP6Parser {
                     currentColumn.setName(attributes.getValue("name"));
                     try{
                         if(this.vpModels.get(attributes.getValue("id")).getDocumentation() != null) {
+							Hashtable<String, String> properties=new Hashtable<String, String>();
+							
+							parseProperties(this.vpModels.get(attributes.getValue("id")).getDocumentation(), properties);
+							currentColumn.setMetaProperties(properties);
+							System.err.println("==>> column:"+currentColumn.getName()+" properties:"+properties);
+							/*
                             String[] props = this.vpModels.get(attributes.getValue("id")).getDocumentation().split(";");
                             for(String prp: props) {
                                 String[] keyValueProp = prp.trim().split("=");
@@ -225,6 +257,7 @@ public class VP6Parser {
                                     currentColumn.setLabel(keyValueProp[1].trim());
                                 } 
                             }                        
+							*/
                         }
                     } catch (Exception ex){
                         ex.printStackTrace(System.err);
@@ -325,13 +358,13 @@ public class VP6Parser {
                 baos.write(buffer,0,r);
             }
 
-            VP6Parser ps=new VP6Parser();
+            VP6ParserForXpressoSystems ps=new VP6ParserForXpressoSystems();
             Hashtable<String,VPModel> vpModels;
             bais=new ByteArrayInputStream (baos.toByteArray());
-            vpModels = VP6Parser.loadVPModels(bais);
+            vpModels = VP6ParserForXpressoSystems.loadVPModels(bais);
             DBTableSet dbSet = null;
             bais.reset();
-            dbSet=VP6Parser.loadFromXMLWithVPModels(bais,vpModels);
+            dbSet=VP6ParserForXpressoSystems.loadFromXMLWithVPModels(bais,vpModels);
             return dbSet;
         } catch(Exception ex) {
             ex.printStackTrace();

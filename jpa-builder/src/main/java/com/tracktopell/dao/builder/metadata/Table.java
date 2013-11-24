@@ -22,7 +22,9 @@ public class Table {
     protected List<Index> indexes;
     protected String comments;
     protected String toStringPattern;
-
+	
+	private Hashtable<String,String> metaProperties;
+	
     /**
      * Creates a new instance of Table
      */
@@ -659,7 +661,7 @@ public class Table {
 
         return sbEqualsCode.toString();
     }
-
+	
     private String getFirstToStringConcatenable() {
         String ts = null;
         Iterator<Column> simpleColumnsIterator = getSortedColumnsForJPA();
@@ -671,11 +673,10 @@ public class Table {
                 ts = c.getName();
             }
         }
-
         return ts;
     }
 
-    public String getToStringCode(String packageName) {
+    public String getToStringCode(DBTableSet dbSet,String packageName) {
         StringBuffer sbToStringCode = new StringBuffer();
 
         sbToStringCode.append("\"");
@@ -684,9 +685,9 @@ public class Table {
         sbToStringCode.append(FormatString.getCadenaHungara(getName()));
         sbToStringCode.append("[");
 
-        String tsDefault = getFirstToStringConcatenable();
-        if (tsDefault != null) {
-            return FormatString.renameForJavaMethod(tsDefault);
+        String tsDefault = dbSet.getTableToStringConcatenable(this);
+        if (tsDefault != null && tsDefault.length()>1) {
+            return tsDefault;
         } else if (countPrimaryKeys() == 1 || hasEmbeddedPK() || isManyToManyTableWinthMoreColumns()) {
             //System.err.println("\t=>getToStringCode:" + this.getName() + " for PK: " + getJPAPK() + "(" + (countPrimaryKeys() == 1) + "||" + hasEmbeddedPK() + "||" + isManyToManyTableWinthMoreColumns() + ")");
                 int numFKembeddes = 0;
@@ -816,4 +817,56 @@ public class Table {
 
         return toStringPatternReplaced;
     }
+
+	/**
+	 * @return the metaProperties
+	 */
+	public Hashtable<String,String> getMetaProperties() {
+		if(metaProperties == null || (metaProperties!=null && metaProperties.size()==0)){
+			metaProperties = new Hashtable<String,String>();
+			
+			final Collection<Column> primaryKeys = this.getPrimaryKeys();
+			int cc=0;
+			StringBuffer sb = new StringBuffer();
+			for(Column c: primaryKeys){
+				if(cc>0)
+					sb.append(", ");
+				sb.append(c.getName());
+				cc++;
+			}
+			
+			metaProperties.put("atributos_consulta", sb.toString());
+			metaProperties.put("atributos_orderby", sb.toString());
+			metaProperties.put("estilo_columnas", "");
+			
+			//@atributos_consulta="id_unidad, nombre"
+			//@atributos_orderby="nombre"
+			//@estilo_columnas="columnWidth20, columnWidth60 leftAlign, columnWidth10, columnWidth10"
+		}
+		return metaProperties;
+	}
+
+	/**
+	 * @param metaProperties the metaProperties to set
+	 */
+	public void setMetaProperties(Hashtable<String,String> metaProperties) {
+		this.metaProperties = metaProperties;
+	}
+
+	public Collection<Column> getColums() {
+		return this.getColumns().values();
+	}
+
+	public int countReferencesToTable(String name) {
+		Collection<ReferenceTable> fkReferenceTables = getFKReferenceTables();
+		final Iterator<ReferenceTable> iteratorRFKs = fkReferenceTables.iterator();
+		int ccrfk=0;
+		while( iteratorRFKs.hasNext() ){
+			ReferenceTable rt = iteratorRFKs.next();
+			if(rt.getTableName().equalsIgnoreCase(name)){
+				ccrfk++;
+			}
+		}
+		return ccrfk;
+	}
 }

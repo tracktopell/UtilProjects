@@ -271,5 +271,33 @@ public class DBTableSet {
         }
         
     }
+	
+	public String getTableToStringConcatenable(Table table) {
+        
+        Iterator<Column> simpleColumnsIterator = table.getSortedColumnsForJPA();
+        int numPrpertiesAdded = 0;
+		StringBuilder sb= new StringBuilder();
+		
+        while (simpleColumnsIterator.hasNext()) {
+            Column c = simpleColumnsIterator.next();
+            if (c.isToStringConcatenable()) {
+				if(numPrpertiesAdded > 0){
+					sb.append(" + \", \" + ");
+				}
+				String jpaClass = c.getJavaClassType();
+				
+				if (!(table instanceof EmbeddeableColumn) && jpaClass.equals("double") || jpaClass.equals("int") || jpaClass.equals("float") || jpaClass.equals("char") || jpaClass.equals("byte")) {
+					Table fTable = getTable(table.getFKReferenceTable(c.getName()).getTableName());
+                    sb.append(fTable.getJavaDeclaredObjectName());                    
+                } else {
+                    sb.append(FormatString.renameForJavaMethod(c.getName()));
+				}
+                
+				numPrpertiesAdded++;
+            }
+        }
+        return sb.toString();
+    }
+
 
 }

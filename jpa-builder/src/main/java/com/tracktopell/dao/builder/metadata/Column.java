@@ -5,6 +5,8 @@
 
 package com.tracktopell.dao.builder.metadata;
 
+import java.util.Hashtable;
+
 /**
  *
  * @author Usuario
@@ -85,9 +87,13 @@ public interface Column {
     
     void setJavaDeclaredName(String javaDeclaredName);
 
-    public boolean isIntegerJavaType();
+    boolean isIntegerJavaType();
 
-    public void setToStringConcatenable(boolean b);
+    void setToStringConcatenable(boolean b);
     
-    public boolean isToStringConcatenable();
+    boolean isToStringConcatenable();
+
+	void setMetaProperties(Hashtable<String, String> properties);
+	
+	Hashtable<String, String>  getMetaProperties();
 }
