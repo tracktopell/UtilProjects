@@ -409,6 +409,9 @@ public class Table {
     }
 
     public String getLabel() {
+		if(label == null){
+			buildPosibleLabel();
+		}
         return label;
     }
 
