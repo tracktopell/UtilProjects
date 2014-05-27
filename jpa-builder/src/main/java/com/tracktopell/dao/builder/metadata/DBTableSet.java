@@ -287,8 +287,52 @@ public class DBTableSet {
 				String jpaClass = c.getJavaClassType();
 				
 				if (!(table instanceof EmbeddeableColumn) && jpaClass.equals("double") || jpaClass.equals("int") || jpaClass.equals("float") || jpaClass.equals("char") || jpaClass.equals("byte")) {
-					Table fTable = getTable(table.getFKReferenceTable(c.getName()).getTableName());
-                    sb.append(fTable.getJavaDeclaredObjectName());                    
+					final ReferenceTable fkReferenceTable = table.getFKReferenceTable(c.getName());
+					if(fkReferenceTable != null) {
+						Table fTable = getTable(fkReferenceTable.getTableName());
+						if(fTable != null){
+							sb.append(fTable.getJavaDeclaredObjectName());                    
+						}
+					} else {
+						sb.append(FormatString.renameForJavaMethod(c.getName()));
+					}
+                    
+                } else {
+                    sb.append(FormatString.renameForJavaMethod(c.getName()));
+				}
+                
+				numPrpertiesAdded++;
+            }
+        }
+        return sb.toString();
+    }
+	
+	public String getTableToStringDTOConcatenable(Table table) {
+        
+        Iterator<Column> simpleColumnsIterator = table.getSortedColumnsForJPA();
+        int numPrpertiesAdded = 0;
+		StringBuilder sb= new StringBuilder();
+		
+        while (simpleColumnsIterator.hasNext()) {
+            Column c = simpleColumnsIterator.next();
+            if (c.isToStringConcatenable()) {
+				if(numPrpertiesAdded > 0){
+					sb.append(" + \", \" + ");
+				}
+				String jpaClass = c.getJavaClassType();
+				
+				if (!(table instanceof EmbeddeableColumn) && jpaClass.equals("double") || jpaClass.equals("int") || jpaClass.equals("float") || jpaClass.equals("char") || jpaClass.equals("byte")) {
+					final ReferenceTable fkReferenceTable = table.getFKReferenceTable(c.getName());
+					if(fkReferenceTable != null) {
+						Table fTable = getTable(fkReferenceTable.getTableName());
+						if(fTable != null){
+							//sb.append(fTable.getJavaDeclaredObjectName());                    
+							sb.append(c.getJavaDeclaredObjectName());
+						}
+					} else {
+						sb.append(FormatString.renameForJavaMethod(c.getName()));
+					}
+                    
                 } else {
                     sb.append(FormatString.renameForJavaMethod(c.getName()));
 				}
