@@ -424,13 +424,14 @@ public class DTOBeanBuilder {
 							fTable = dbSet.getTable(table.getFKReferenceTable(column.getName()).getTableName());
 														
 							if( hasNomalizaedFKReferences(fTable, column) ){
-								ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(fTable.getName()) + "().get" + FormatString.getCadenaHungara(fTable.getJPAPK()) + "(); // normalized ");
+								//ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(fTable.getName()) + "().get" + FormatString.getCadenaHungara(fTable.getJPAPK()) + "(); // normalized ");
+								ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(fTable.getName()) + "()!=null?jpaEntity.get" + FormatString.getCadenaHungara(fTable.getName()) + "().get" + FormatString.getCadenaHungara(fTable.getJPAPK()) + "():null; // normalized ");
 							}else{
-								ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(column.getName()) + "().get" + FormatString.getCadenaHungara(fTable.getJPAPK()) + "(); // custom");
+								ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(column.getName()) + "()!=null?jpaEntity.get" + FormatString.getCadenaHungara(column.getName()) + "().get" + FormatString.getCadenaHungara(fTable.getJPAPK()) + "():null; // custom");
 							}
 							
 						} else {
-							ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(column.getName()) + "();");
+							ps.println("        this." + column.getJavaDeclaredObjectName() + " = jpaEntity.get" + FormatString.getCadenaHungara(column.getName()) + "(); // primitive");
 						}
 					}
 				} else if (line.indexOf("${dtoCopyedToJpaMembers.code.code}") >= 0) {
@@ -441,7 +442,8 @@ public class DTOBeanBuilder {
 							fTable = dbSet.getTable(table.getFKReferenceTable(column.getName()).getTableName());
 							
 							if( hasNomalizaedFKReferences(fTable, column) ){
-								ps.println("        jpaEntity.set" + FormatString.getCadenaHungara(fTable.getName()) + "( new " + jpaPackageBeanMember + "." + fTable.getJavaDeclaredName() + "(this.get" + FormatString.getCadenaHungara(column.getName()) + "())); // normalized");
+								//ps.println("        jpaEntity.set" + FormatString.getCadenaHungara(fTable.getName()) + "( new " + jpaPackageBeanMember + "." + fTable.getJavaDeclaredName() + "(this.get" + FormatString.getCadenaHungara(column.getName()) + "())); // normalized");
+								ps.println("        jpaEntity.set" + FormatString.getCadenaHungara(fTable.getName()) + "( this.get" + FormatString.getCadenaHungara(column.getName()) + "()!=null? new " + jpaPackageBeanMember + "." + fTable.getJavaDeclaredName() + "(this.get" + FormatString.getCadenaHungara(column.getName()) + "()):null); // normalized");
 							}else{
 								ps.println("        jpaEntity.set" + FormatString.getCadenaHungara(column.getName()) + "( new " + jpaPackageBeanMember + "." + fTable.getJavaDeclaredName() + "(this.get" + FormatString.getCadenaHungara(column.getName()) + "())); // custom");
 							}
