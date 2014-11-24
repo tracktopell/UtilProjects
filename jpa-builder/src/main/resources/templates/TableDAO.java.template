@@ -1,0 +1,214 @@
+/**
+ * ${tablebean.declaredName}DAO
+ *
+ * Created ${date}
+ *
+ * @author tracktopell :: DAO Builder
+ * http://www.tracktopell.com.mx
+ */
+
+package ${dao.package};
+
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
+
+import java.io.ByteArrayInputStream;
+
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Blob;
+	
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+import ${tablebean.package}.*;
+import com.tracktopell.jdbc.DataSourceFacade;
+
+public class ${tablebean.declaredName}DAO {
+
+	private final static Logger logger = Logger.getLogger("${tablebean.declaredName}DAO");
+
+	/**
+	*	Datasource for table ${tablebean.name} simple CRUD operations.
+	*   x common paramenter.
+	*/
+
+	private static ${tablebean.declaredName}DAO instance;
+
+	private ${tablebean.declaredName}DAO(){	
+		logger.log(Level.SEVERE,"--> created ${tablebean.declaredName}DAO.");
+	}
+
+	private static ${tablebean.declaredName}DAO getInstance() {
+		if(instance == null){
+			instance = new ${tablebean.declaredName}DAO();
+		}
+		return instance;
+	}
+
+	private Connection getConnection(){
+		return DataSourceFacade.getConnection();
+	}
+
+	private Connection getConnectionCommiteable(){
+		return DataSourceFacade.getConnectionCommiteable();
+	}
+
+    public ${tablebean.declaredName} findBy(${tablebean.declaredName} x){
+		${tablebean.declaredName} r = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ${tablebean.listColumns} FROM ${tablebean.name} "+
+					"WHERE ${tablebean.pk}=?"
+			);
+			ps.set${tablebean.pk.javaClass}(1, x.${tablebean.getPK}());
+			
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				r = new ${tablebean.declaredName}();
+				%foreach tablebean.member in ${tablebean.members}
+				r.${tablebean.member.setter}(rs.get${tablebean.member.javaClass}("${tablebean.member.name}"));
+				%endfor
+			}
+		}catch(SQLException ex) {
+			logger.log(Level.SEVERE,"findBy:", ex);
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.log(Level.SEVERE,"findBy:clossing:", ex);
+				}
+			}
+		}
+		return r;		
+	}
+
+    public Collection<${tablebean.declaredName}> findAll() {
+		Collection<${tablebean.declaredName}> r = new ArrayList<${tablebean.declaredName}>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ${tablebean.listColumns} FROM ${tablebean.name}");
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				${tablebean.declaredName} x = new ${tablebean.declaredName}();
+				%foreach tablebean.member in ${tablebean.members}
+				x.${tablebean.member.setter}(rs.get${tablebean.member.javaClass}("${tablebean.member.name}"));
+				%endfor
+				r.add(x);
+			}
+		}catch(SQLException ex) {
+			logger.log(Level.SEVERE,"findAll:", ex);
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.log(Level.SEVERE,"findAll:clossing:", ex);
+				}
+			}
+		}
+		return r;		
+	};
+    
+    public int insert(${tablebean.declaredName} x) {
+		PreparedStatement ps = null;
+		int r = -1;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("INSERT INTO ${tablebean.name}(${tablebean.listColumns}) "+
+					" VALUES(${tablebean.listParamColumns})");			
+			int ci=1;
+			%foreach tablebean.member in ${tablebean.members}
+			ps.set${tablebean.member.javaClass}(ci++,x.${tablebean.member.getter}());
+			%endfor
+			// ps.setBlob(ci++,new ByteArrayInputStream(x.getContenidoOriginalXml()));
+
+			r = ps.executeUpdate();						
+		}catch(SQLException ex) {
+			logger.log(Level.SEVERE,"insert:", ex);
+		} finally {
+			if(ps != null) {
+				try{				
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.log(Level.SEVERE,"insert:clossing:", ex);
+				}
+			}
+		}
+		return r;
+	}
+
+	public int update(${tablebean.declaredName} x) {		
+		PreparedStatement ps = null;
+		int r= -1;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("UPDATE ${tablebean.name} SET ${tablebean.listColumns4Update} "+
+					" WHERE ${tablebean.pk}=?");
+			
+			int ci=1;
+			%foreach tablebean.member in ${tablebean.members}
+			ps.set${tablebean.memberNotPK.javaClass}(ci++,x.${tablebean.memberNotPK.getter}());					
+			%endfor
+			ps.set${tablebean.pk.javaClass}(ci++,x.${tablebean.getPK}());
+			
+			r = ps.executeUpdate();						
+		}catch(SQLException ex) {
+			logger.log(Level.SEVERE,"update:", ex);
+		} finally {
+			if(ps != null) {
+				try{
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.log(Level.SEVERE,"update:clossing:", ex);
+				}
+			}
+		}
+		return r;
+	}
+
+    public int delete(${tablebean.declaredName} x){
+		PreparedStatement ps = null;
+		int r= -1;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("DELETE FROM ${tablebean.name} WHERE ${tablebean.pk}=?");
+			ps.set${tablebean.pk.javaClass}(1, x.${tablebean.getPK}());
+			
+			r = ps.executeUpdate();						
+		}catch(SQLException ex) {
+			logger.log(Level.SEVERE,"delete:", ex);
+		} finally {
+			if(ps != null) {
+				try{
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.log(Level.SEVERE,"delete:clossing:", ex);
+				}
+			}
+		}
+		return r;
+	}
+
+}

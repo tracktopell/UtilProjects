@@ -6,7 +6,7 @@
 	<groupId>com.xpressosystems.util</groupId>
 	<artifactId>jpa-builder</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.7</version>
+	<version>0.9.9</version>
 	<name>jpa-builder</name>
 
 	<properties>

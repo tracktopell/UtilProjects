@@ -1,5 +1,7 @@
-package com.tracktopell.dao.builder.jpa;
+package com.tracktopell.dao.builder.jdbc;
 
+import com.tracktopell.dao.builder.*;
+import com.tracktopell.dao.builder.jpa.*;
 import com.tracktopell.dao.builder.metadata.DBTableSet;
 import com.tracktopell.dao.builder.parser.VP6Parser;
 import com.tracktopell.dao.builder.parser.VPModel;
@@ -7,20 +9,21 @@ import java.io.FileInputStream;
 import java.util.Hashtable;
 
 /**
- * VPModel2SQL
+ * DAOBuilder
  */
-public class VPModel2DTO {
+public class DAOBuilder {
 
     public static void main(String[] args) {
         String  pathToVPProject  = null;
         String  schemmaName      = null;
         String  packageBeanMember= null;
+		String  packageDAOMember= null;
         String  basePath         = null;
         String[]tableNames2Gen   = null;
         try {
 
-            if( args.length != 5) {
-                System.err.println("use: <java ...> VPModel2DTO  pathToVPProject  schemmaName  packageBeanMember  basePath   tableNames2GenList,Separated,By,Comma" );
+            if( args.length != 6) {
+                System.err.println("use: <java ...> DAOBuilder pathToVPProject  schemmaName  packageBeanMember  packageDAOMember  basePath   tableNames2GenList,Separated,By,Comma" );
                 System.exit(1);
             }
 
@@ -28,8 +31,9 @@ public class VPModel2DTO {
             pathToVPProject  = args[0];
             schemmaName      = args[1];
             packageBeanMember= args[2];
-            basePath         = args[3];
-            tableNames2Gen   = args[4].split(",");
+			packageDAOMember = args[3];
+            basePath         = args[4];
+            tableNames2Gen   = args[5].split(",");
 
             Hashtable<String, VPModel> vpModels;
             vpModels = VP6Parser.loadVPModels(new FileInputStream(pathToVPProject));
@@ -45,7 +49,8 @@ public class VPModel2DTO {
             //System.out.println("====================== END PARSE XML ========================");
             //System.out.println("->" + dbSet);
 
-            DTOBeanBuilder.buildMappingBeans(dbSet, packageBeanMember, schemmaName, basePath);
+            DTOBeanBuilder.buildDAOs(dbSet, packageBeanMember,packageDAOMember,basePath);
+			
 
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
