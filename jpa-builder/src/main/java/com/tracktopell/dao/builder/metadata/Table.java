@@ -662,6 +662,91 @@ public class Table {
 		return sbEqualsCode.toString();
 	}
 
+	public String getSimpleHashCodeSumCode() {
+		StringBuffer sbHashCodeSum = new StringBuffer();
+		int numColumns = 0;
+		sbHashCodeSum.append("(");
+
+		Iterator<Column> simpleColumnsIterator = getPrimaryKeys().iterator();
+
+		while (simpleColumnsIterator.hasNext()) {
+			Column c = simpleColumnsIterator.next();
+			if (!c.isPrimaryKey()) {
+				continue;
+			}
+			if (numColumns > 0) {
+				sbHashCodeSum.append(" + \n\t\t\t");
+			}
+			String jpaPKClass = c.getJavaClassType();
+			if ( jpaPKClass.equals("double") || jpaPKClass.equals("int") || jpaPKClass.equals("float") || jpaPKClass.equals("char") || jpaPKClass.equals("byte")) {
+				sbHashCodeSum.append(" ( String.valueOf(");
+				sbHashCodeSum.append(FormatString.renameForJavaMethod(c.getName()));
+				sbHashCodeSum.append(").hashCode() )");
+			} else {
+				sbHashCodeSum.append(" (");
+				sbHashCodeSum.append(FormatString.renameForJavaMethod(c.getName()));
+				sbHashCodeSum.append(" != null ? ");
+				sbHashCodeSum.append(FormatString.renameForJavaMethod(c.getName()));
+				sbHashCodeSum.append(".hashCode() : 0 )");
+			}
+
+			numColumns++;
+		}
+		sbHashCodeSum.append(" )");
+
+		return sbHashCodeSum.toString();
+	}
+
+	public String getSimpleEqualsCode() {
+		StringBuffer sbEqualsCode = new StringBuffer();
+
+		sbEqualsCode.append(FormatString.getCadenaHungara(getName()) + " other = (");
+		sbEqualsCode.append(FormatString.getCadenaHungara(getName()) + " ) o;");
+		sbEqualsCode.append("\n");
+		String jpaPKClass = "";
+
+		Iterator<Column> simpleColumnsIterator = getPrimaryKeys().iterator();
+		int numColumns = 0;
+
+		sbEqualsCode.append("        if ( ");
+
+		while (simpleColumnsIterator.hasNext()) {
+			Column c = simpleColumnsIterator.next();
+			if (!c.isPrimaryKey()) {
+				continue;
+			}
+			if (numColumns > 0) {
+				sbEqualsCode.append(" || \n             ");
+			}
+			jpaPKClass = c.getJavaClassType();
+			if (jpaPKClass.equals("double") || jpaPKClass.equals("int") || jpaPKClass.equals("float") || jpaPKClass.equals("char") || jpaPKClass.equals("byte")) {
+				sbEqualsCode.append(" ( this.");
+				sbEqualsCode.append(c.getJavaDeclaredObjectName());
+				sbEqualsCode.append(" != other.");
+				sbEqualsCode.append(c.getJavaDeclaredObjectName());
+				sbEqualsCode.append(" ) ");
+			} else {
+				sbEqualsCode.append("(this.");
+				sbEqualsCode.append(FormatString.renameForJavaMethod(c.getName()));
+				sbEqualsCode.append(" == null && other.");
+				sbEqualsCode.append(FormatString.renameForJavaMethod(c.getName()));
+				sbEqualsCode.append(" != null) || (this." + FormatString.renameForJavaMethod(c.getName()));
+				sbEqualsCode.append(" != null && !this.");
+				sbEqualsCode.append(FormatString.renameForJavaMethod(c.getName()));
+				sbEqualsCode.append(".equals(other.");
+				sbEqualsCode.append(FormatString.renameForJavaMethod(c.getName()));
+				sbEqualsCode.append("))");
+			}
+
+			numColumns++;
+		}
+		sbEqualsCode.append(") {\n");
+		sbEqualsCode.append("            return false;\n");
+		sbEqualsCode.append("        }\n");
+
+		return sbEqualsCode.toString();
+	}
+
 	private String getFirstToStringConcatenable() {
 		String ts = null;
 		Iterator<Column> simpleColumnsIterator = getSortedColumnsForJPA();
@@ -752,7 +837,7 @@ public class Table {
 		sbToStringCode.append(".");
 		sbToStringCode.append(FormatString.getCadenaHungara(getName()));
 		sbToStringCode.append("[");
-		
+
 		String tsDefault = dbSet.getTableToStringDTOConcatenable(this);
 		if (tsDefault != null && tsDefault.length() > 1) {
 			return tsDefault;

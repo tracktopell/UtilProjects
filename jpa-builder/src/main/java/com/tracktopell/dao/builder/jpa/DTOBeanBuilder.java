@@ -42,7 +42,7 @@ public class DTOBeanBuilder {
 		FileOutputStream fos = null;
 		PrintStream ps = null;
 		BufferedReader br = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		String collectionClass = "Collection";
 
 		Enumeration<String> tableNames = dbSet.getTableNames();
@@ -274,7 +274,7 @@ public class DTOBeanBuilder {
 		FileOutputStream fos = null;
 		PrintStream ps = null;
 		BufferedReader br = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		String collectionClass = "Collection";
 
 		Enumeration<String> tableNames = dbSet.getTableNames();
@@ -501,7 +501,7 @@ public class DTOBeanBuilder {
 		FileOutputStream fos = null;
 		PrintStream ps = null;
 		BufferedReader br = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		String collectionClass = "Collection";
 
 		Enumeration<String> tableNames = dbSet.getTableNames();
@@ -728,7 +728,7 @@ public class DTOBeanBuilder {
 		FileOutputStream fos = null;
 		PrintStream ps = null;
 		BufferedReader br = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		String collectionClass = "Collection";
 
 		Enumeration<String> tableNames = dbSet.getTableNames();

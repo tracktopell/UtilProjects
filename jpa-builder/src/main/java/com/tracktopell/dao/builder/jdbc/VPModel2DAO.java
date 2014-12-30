@@ -1,7 +1,5 @@
 package com.tracktopell.dao.builder.jdbc;
 
-import com.tracktopell.dao.builder.*;
-import com.tracktopell.dao.builder.jpa.*;
 import com.tracktopell.dao.builder.metadata.DBTableSet;
 import com.tracktopell.dao.builder.parser.VP6Parser;
 import com.tracktopell.dao.builder.parser.VPModel;
@@ -9,9 +7,9 @@ import java.io.FileInputStream;
 import java.util.Hashtable;
 
 /**
- * DAOBuilder
+ * VPModel2DAO
  */
-public class DAOBuilder {
+public class VPModel2DAO {
 
     public static void main(String[] args) {
         String  pathToVPProject  = null;
@@ -49,7 +47,7 @@ public class DAOBuilder {
             //System.out.println("====================== END PARSE XML ========================");
             //System.out.println("->" + dbSet);
 
-            DTOBeanBuilder.buildDAOs(dbSet, packageBeanMember,packageDAOMember,basePath);
+            CodeBuilder.buildDAOs(dbSet, packageBeanMember,packageDAOMember,basePath);
 			
 
         } catch (Exception ex) {

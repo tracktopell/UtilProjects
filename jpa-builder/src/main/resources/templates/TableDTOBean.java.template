@@ -3,14 +3,15 @@ package ${tablebean.package};
 
 import java.io.Serializable;
 import java.util.Set;
-import java.util.Collection;
-import java.util.Collection;
+import java.util.MissingFormatArgumentException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+
 
 /**
  * Class for mapping DTO Entity of Table ${tablebean.name}.
  * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
- * @version 0.8.5
  * @date ${date}
  */
 
@@ -47,6 +48,7 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
+		// bug ?
         hash = ${tablebean.hashCodeSumCode};
         return hash;
     }
@@ -67,5 +69,27 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     public String toString() {
         return ${tablebean.toStringCode};
     }
+
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
+	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
+	private static final DecimalFormat    cur = new DecimalFormat("0.00");
+
+	public String printPlainSeparated(String s){
+		String ser=null;
+		StringBuffer sb= new StringBuffer();
+
+		${tablebean.serializeCode}
+		return ser;
+	}
+
+	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
+		String srcSpplited[] = src.split(s);
+		int nf=0;
+		try {			
+			${tablebean.scanCode}
+		}catch(Exception e){
+			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
+		}
+	}
 
 }

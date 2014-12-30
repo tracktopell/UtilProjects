@@ -1,6 +1,5 @@
-package com.tracktopell.dao.builder;
+package com.tracktopell.dao.builder.jdbc;
 
-import com.tracktopell.dao.builder.jpa.*;
 import com.tracktopell.dao.builder.metadata.DBTableSet;
 import com.tracktopell.dao.builder.parser.VP6Parser;
 import com.tracktopell.dao.builder.parser.VPModel;
@@ -46,7 +45,7 @@ public class VPModel2DTO {
             //System.out.println("====================== END PARSE XML ========================");
             //System.out.println("->" + dbSet);
 
-            DTOBeanBuilder.buildMappingDTOBeans(dbSet, packageBeanMember,basePath);
+            CodeBuilder.buildMappingDTOBeans(dbSet, packageBeanMember,basePath);
 			
 
         } catch (Exception ex) {
