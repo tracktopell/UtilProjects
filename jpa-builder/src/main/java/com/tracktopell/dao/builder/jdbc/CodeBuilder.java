@@ -394,7 +394,8 @@ public class CodeBuilder {
 									lineIL = lineIL.replace("x.${tablebean.memberNotPK.getter}(", "new ByteArrayInputStream(x.getContenidoOriginalXml()");
 								}
 							} else {
-								lineIL = lineIL.replace("${tablebean.member.setter}", "set"+column.getJavaDeclaredName());
+								lineIL = lineIL.replace("${tablebean.member.setter}", "set"+column.getJavaDeclaredName());									
+								lineIL = lineIL.replace("${tablebean.member.javaObjectClass}", FormatString.firstLetterUpperCase(jc.replace("java.lang.", "").replace("java.sql.", "").replace("java.util.", "").replace("int","integer")));
 								lineIL = lineIL.replace("${tablebean.member.javaClass}", FormatString.firstLetterUpperCase(jc.replace("java.lang.", "").replace("java.sql.", "").replace("java.util.", "").replace("Integer","Int")));
 							}
 							
@@ -459,6 +460,7 @@ public class CodeBuilder {
 					//line = line.replace("${tablebean.PKMembersParameters}", membersParameters(table, dbSet));
 										
 					line = line.replace("${tablebean.pk.name}", tablePKColumn.getName().toUpperCase());
+					line = line.replace("${tablebean.pk.javaObjectClass}", tablePKColumn.getJavaClassType().replace("java.lang.", "").replace("java.sql.", "").replace("java.util.", ""));
 					line = line.replace("${tablebean.pk.javaClass}", tablePKColumn.getJavaClassType().replace("java.lang.", "").replace("java.sql.", "").replace("java.util.", "").replace("Integer","Int"));
 					line = line.replace("${tablebean.getPK}", "get"+tablePKColumn.getJavaDeclaredName());
 					line = line.replace("${tablebean.setPK}", "set"+tablePKColumn.getJavaDeclaredName());
