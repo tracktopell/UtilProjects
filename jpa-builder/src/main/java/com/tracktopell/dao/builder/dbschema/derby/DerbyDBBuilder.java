@@ -1,5 +1,5 @@
 /*
- * MySQLDBBuilder.java
+ * DerbyDBBuilder.java
  *
  */
 
@@ -14,7 +14,7 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 /**
- *
+ * com.tracktopell.dao.builder.dbschema.derby.DerbyDBBuilder
  * @author tracktopell
  */
 public class DerbyDBBuilder extends DBBuilder{

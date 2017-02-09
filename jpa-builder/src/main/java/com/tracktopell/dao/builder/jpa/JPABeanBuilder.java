@@ -164,7 +164,8 @@ public class JPABeanBuilder {
 										ps.println("    private " + fTable.getJavaDeclaredName() + " " + fTable.getJavaDeclaredObjectName() + ";");
 									} else {
 										ps.println("    @Basic(optional = " + column.isNullable() + ")");
-										ps.println("    @@ManyToOneColumn(name = \"" + column.getName().toUpperCase() + "\")");
+										ps.println("    @ManyToOne");
+										ps.println("    @Column(name = \"" + column.getName().toUpperCase() + "\")");
 										//if(column.getJavaClassType().equals("java.util.Date")){
 										if (column.getSqlType().toLowerCase().equals("timestamp") || column.getSqlType().toLowerCase().equals("datetime")) {
 											ps.println("    @Temporal(TemporalType.TIMESTAMP)");

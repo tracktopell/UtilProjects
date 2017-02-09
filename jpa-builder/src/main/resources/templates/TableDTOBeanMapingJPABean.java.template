@@ -6,29 +6,6 @@ import java.util.Set;
 import java.util.Collection;
 import java.util.Collection;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Embeddable;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.EmbeddedId;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.JoinTable;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 // import ${tableJPAbean.package}.${tablebean.declaredName};
 
 /**
@@ -52,20 +29,6 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     public ${tablebean.declaredName}() {
     }
 
-    /** 
-     * JPA Entity Constructor
-     */
-    public ${tablebean.declaredName}(${tableJPAbean.package}.${tablebean.declaredName} jpaEntity) {
-        ${jpaCopyedToDtoMembers.code.code}
-    }
-	
-    /** 
-     * lazy Constructor just with IDs
-     */
-    public ${tablebean.declaredName}( ${tablebean.PKMembersParameters} ) {
-        ${tablebean.PKMembersParametersInitCode}
-    }
-    
     /**
      * Getters and Setters
      */
@@ -75,15 +38,6 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     ${tablebean.member.setter}    
 
     %endfor
-
-    public ${tableJPAbean.package}.${tablebean.declaredName} buildJpaEntity(){
-        ${tableJPAbean.package}.${tablebean.declaredName} jpaEntity = new ${tableJPAbean.package}.${tablebean.declaredName}();
-
-        ${dtoCopyedToJpaMembers.code.code}
-
-        return jpaEntity;
-    }
-
 
     @Override
     public int hashCode() {

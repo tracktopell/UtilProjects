@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.util.Hashtable;
 
 /**
+ * com.tracktopell.dao.builder.dbschema.VPModel2SQL
  * VPModel2SQL
  */
 public class VPModel2SQL {
@@ -21,6 +22,13 @@ public class VPModel2SQL {
         String  outputPath       = null;
         String[]tableNames2Gen   = null;
         try {
+			
+			if( args.length != 5) {
+                System.err.println("use: <java ...> com.tracktopell.dao.builder.dbschema.VPModel2SQL  pathToVPProject  rdbms  schemma  basePath  [ tableNames2GenList,Separated,By,Comma | {all} ]" );
+                System.exit(1);
+            }
+
+			
             pathToVPProject  = args[0];
             rdbms            = args[1];
             schemmaName      = args[2];

@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.util.Hashtable;
 
 /**
+ * java com.tracktopell.dao.builder.jpa.VPModel2DTOAndBeans
  * VPModel2SQL
  */
 public class VPModel2DTOAndBeans {
@@ -45,6 +46,8 @@ public class VPModel2DTOAndBeans {
             //System.out.println("->" + dbSet);
 			
 			DTOBeanBuilder.buildMappingDTOBeansAndJPABeans(dbSet, dtoPackageBeanMember, jpaPackageBeanMember, basePath);
+			
+			DTOBeanBuilder.buildAssembler(dbSet, dtoPackageBeanMember, jpaPackageBeanMember, basePath);
 			
 			JPABeanBuilder.buildMappingBeans(dbSet, jpaPackageBeanMember, basePath);
             

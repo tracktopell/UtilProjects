@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -49,6 +50,10 @@ public class DBTableSet {
     
     public Enumeration<String> getTableNames(){
         return this.getTables().keys();
+    }
+	
+	public Set<String> getTableNamesSet(){
+        return this.getTables().keySet();
     }
     
     public Table getTable(String tableumnName){
