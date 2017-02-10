@@ -264,7 +264,7 @@ public class DTOBeanBuilder {
 		}
 	}
 
-	public static void buildMappingDTOBeansAndJPABeans(DBTableSet dbSet, String dtoPackageBeanMember, String jpaPackageBeanMember, String basePath)
+	public static void buildMappingDTOBeansAndJPABeans(DBTableSet dbSet, String dtoPackageBeanMember, String jpaPackageBeanMember, String basePath,boolean flatDTOs)
 			throws Exception {
 		String fileName;
 		File baseDir = null;
@@ -276,7 +276,10 @@ public class DTOBeanBuilder {
 		BufferedReader br = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		String collectionClass = "Collection";
-
+		
+		System.err.println("=============================>>> DTOs ");
+		
+		
 		Enumeration<String> tableNames = dbSet.getTableNames();
 		ArrayList<Table> tablesForGeneration = new ArrayList<Table>();
 		while (tableNames.hasMoreElements()) {
@@ -290,9 +293,9 @@ public class DTOBeanBuilder {
 				while (itFKC.hasNext()) {
 					Column cctJpaC = itFKC.next();
 					if (cctJpaC instanceof EmbeddeableColumn) {
-						System.err.println("\t-->> + " + cctJpaC.getName());
-						tablesForGeneration.add((EmbeddeableColumn) cctJpaC);
-						addedAsFKEmbedded = true;
+						System.err.println("\t-->>SKIPING DTO + " + cctJpaC.getName());
+						//tablesForGeneration.add((EmbeddeableColumn) cctJpaC);
+						//addedAsFKEmbedded = true;
 					}
 				}
 
@@ -307,7 +310,7 @@ public class DTOBeanBuilder {
 		//System.err.println("==============================>>> ");
 		for (Table table : tablesForGeneration) {
 
-			System.err.println("-->> generating: " + table.getJavaDeclaredName() + ".java :" + table);
+			System.err.println("-->> generating DTO: " + table.getJavaDeclaredName() + "DTO.java :" + table);
 
 			Iterator<Column> columnsSortedColumnsForJPA = table.getSortedColumnsForJPA();
 			List<Column> definitiveColumns = new ArrayList();
@@ -331,7 +334,7 @@ public class DTOBeanBuilder {
 				dirSourceFile.mkdirs();
 			}
 
-			fileName = dirSourceFile.getPath() + File.separator + table.getJavaDeclaredName() + ".java";
+			fileName = dirSourceFile.getPath() + File.separator + table.getJavaDeclaredName() + "DTO.java";
 
 			sourceFile = new File(fileName);
 			fos = new FileOutputStream(sourceFile);
@@ -362,57 +365,56 @@ public class DTOBeanBuilder {
 						}
 
 						for (String lineInLoop : linesToParse) {
-							if (lineInLoop.indexOf("${tablebean.member.javadocCommnet}") >= 0) {
-								if (!table.isManyToManyTableWinthMoreColumns()) {
-									if (column.getComments() != null) {
-										ps.println("    ");
-										ps.println("    /**");
-										ps.println("    * " + column.getComments().replace("\n", "\n     * "));
-										ps.println("    */");
-									} else {
-										String commentForced = column.getName().toLowerCase().replace("_", " ");
-										ps.println("    ");
-										ps.println("    /**");
-										ps.println("    * " + commentForced);
-										ps.println("    */");
-									}
+							if (lineInLoop.indexOf("${tablebean.member.javaIdentifier}") >= 0) {
+								if (! (column instanceof EmbeddeableColumn) ){
+									lineInLoop = lineInLoop.replace("${tablebean.member.javaIdentifier}", column.getJavaDeclaredObjectName());
+									ps.println(lineInLoop);
 								}
-							} else if (lineInLoop.indexOf("${tablebean.member.declaration}") >= 0) {
+							} else if (lineInLoop.indexOf("${tablebean.member.javadocCommnet}") >= 0) {
 								
-								if (column.isForeignKey() && !(table instanceof EmbeddeableColumn)) {
-									fTable = dbSet.getTable(table.getFKReferenceTable(column.getName()).getTableName());									
-									ps.println("    // Direct ID References");
-									ps.println("    private "+fTable.getJPAPKClass().replace("java.lang.", "")+" "+FormatString.renameForJavaMethod(column.getName())+";");
-								} else if (column instanceof EmbeddeableColumn) {
-									EmbeddeableColumn eColumn = (EmbeddeableColumn)column;
-									ps.println("    // EmbedableColumn ID References: FKs {"+eColumn.getFKs()+"}");
-									//ps.println("    private "+fTable.getJPAPKClass().replace("java.lang.", "")+" "+FormatString.renameForJavaMethod(column.getName())+";");
-									ps.println("    private " + column.getJavaClassType().replace("java.lang.", "") + " " + column.getJavaDeclaredObjectName() + ";");
+								if (column.getComments() != null) {
+									ps.println("    ");
+									ps.println("    /**");
+									ps.println("    * " + column.getComments().replace("\n", "\n     * "));
+									ps.println("    */");
 								} else {
-									ps.println("    // primitive");
+									String commentForced = column.getName().toLowerCase().replace("_", " ");
+									ps.println("    ");
+									ps.println("    /**");
+									ps.println("    * " + commentForced);
+									ps.println("    */");
+								}
+
+							} else if (lineInLoop.indexOf("${tablebean.member.declaration}") >= 0) {
+								if (column instanceof EmbeddeableColumn){
+									EmbeddeableColumn eColumn = (EmbeddeableColumn)column;
+									ps.println("    // " + column.getJavaDeclaredObjectName() + " EmbedableColumn ID References: FKs {"+eColumn.getFKs()+"}");
+								} else {
+									ps.println("    // Simple: PK?"+column.isPrimaryKey()+", FK?"+column.isForeignKey()+", class="+column.getClass());
 									ps.println("    private " + column.getJavaClassType().replace("java.lang.", "") + " " + column.getJavaDeclaredObjectName() + ";");
 								}
+
 							} else if (lineInLoop.indexOf("${tablebean.member.getter}") >= 0) {
 								
-								if (column.isForeignKey() && !(table instanceof EmbeddeableColumn)) {
-									ps.println("    public "+fTable.getJPAPKClass().replace("java.lang.", "")+"  get"+FormatString.getCadenaHungara(column.getName())+"() {");									
-									ps.println("        return this." + FormatString.renameForJavaMethod(column.getName()) + ";");
+								if (table instanceof EmbeddeableColumn) {
+									EmbeddeableColumn eColumn = (EmbeddeableColumn)column;
+									ps.println("    // " + column.getJavaDeclaredObjectName() + " EmbedableColumn ID References: FKs {"+eColumn.getFKs()+"}");
 								} else {
 									ps.println("    public "+column.getJavaClassType().replace("java.lang.", "")+" get"+FormatString.getCadenaHungara(column.getName())+"() {");
 									ps.println("        return this." + column.getJavaDeclaredObjectName() + ";");								
+									ps.println("    }");
 								}
-								ps.println("    }");
-
+								
 							} else if (lineInLoop.indexOf("${tablebean.member.setter}") >= 0) {
-								if (column.isForeignKey() && !(table instanceof EmbeddeableColumn)) {
-									ps.println("    public void set"+FormatString.getCadenaHungara(column.getName())+"("+fTable.getJPAPKClass().replace("java.lang.", "")+" id) {");
-									ps.println("        this." + column.getJavaDeclaredObjectName() + " = id;");
+								if (table instanceof EmbeddeableColumn) {
+									EmbeddeableColumn eColumn = (EmbeddeableColumn)column;
+									ps.println("    // " + column.getJavaDeclaredObjectName() + " EmbedableColumn ID References: FKs {"+eColumn.getFKs()+"}");
 								} else {
 									ps.println("    public void set"+FormatString.getCadenaHungara(column.getName())+"("+column.getJavaClassType().replace("java.lang.", "")+" v) {");
 									ps.println("        this." + column.getJavaDeclaredObjectName() + " = v;");								
+									ps.println("    }");
 								}
-								ps.println("    }");
-
+								
 							} else {
 								ps.println(lineInLoop);
 							}

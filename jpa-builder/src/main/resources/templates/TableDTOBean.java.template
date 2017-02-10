@@ -60,6 +60,7 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
             return false;
         }
 
+    	${tablebean.declaredName} other = (${tablebean.declaredName} ) o;
     	${tablebean.equalsCode}
 
     	return true;

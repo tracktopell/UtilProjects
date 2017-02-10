@@ -584,9 +584,9 @@ public class Table {
 	public String getEqualsCode() {
 		StringBuffer sbEqualsCode = new StringBuffer();
 
-		sbEqualsCode.append(FormatString.getCadenaHungara(getName()) + " other = (");
-		sbEqualsCode.append(FormatString.getCadenaHungara(getName()) + " ) o;");
-		sbEqualsCode.append("\n");
+		//sbEqualsCode.append(FormatString.getCadenaHungara(getName()) + " other = (");
+		//sbEqualsCode.append(FormatString.getCadenaHungara(getName()) + " ) o;");
+		//sbEqualsCode.append("\n");
 		String jpaPKClass = getJPAPKClass();
 
 		if ((countPrimaryKeys() == 1 || hasEmbeddedPK() || isManyToManyTableWinthMoreColumns())) {

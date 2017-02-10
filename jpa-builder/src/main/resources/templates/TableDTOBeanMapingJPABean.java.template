@@ -1,12 +1,9 @@
-
 package ${tablebean.package};
 
 import java.io.Serializable;
 import java.util.Set;
 import java.util.Collection;
 import java.util.Collection;
-
-// import ${tableJPAbean.package}.${tablebean.declaredName};
 
 /**
  * Class for mapping DTO Entity of Table ${tablebean.name}.
@@ -16,8 +13,9 @@ import java.util.Collection;
  * @date ${date}
  */
 
-public class ${tablebean.declaredName} implements java.io.Serializable {
+public class ${tablebean.declaredName}DTO implements java.io.Serializable {
     private static final long serialVersionUID = ${tablebean.serialId};
+
     %foreach tablebean.member in ${tablebean.members}
     ${tablebean.member.javadocCommnet}    
     ${tablebean.member.declaration}
@@ -26,7 +24,7 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     /** 
      * Default Constructor
      */
-    public ${tablebean.declaredName}() {
+    public ${tablebean.declaredName}DTO() {
     }
 
     /**
@@ -42,25 +40,37 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash = ${tablebean.hashCodeSumCode};
+        %foreach tablebean.member in ${tablebean.members}		
+		hash += ${tablebean.member.javaIdentifier}.hashCode();
+		%endfor
         return hash;
     }
 
+	@Override
     public boolean equals(Object o){
 
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(o instanceof ${tablebean.declaredName})) {
+        if (!(o instanceof ${tablebean.declaredName}DTO)) {
             return false;
         }
 
-    	${tablebean.equalsCode}
-
-    	return true;
+		boolean flagEuals = true;
+		${tablebean.declaredName}DTO  other = (${tablebean.declaredName}DTO ) o;
+		%foreach tablebean.member in ${tablebean.members}		
+		flagEuals = true; // flagEuals = flagEuals & this.${tablebean.member.javaIdentifier}.equals(other.${tablebean.member.javaIdentifier});
+		%endfor
+    	return flagEuals;
     }
 
     @Override
     public String toString() {
-        return ${tablebean.toStringCode};
+		StringBuilder sb=new StringBuilder();
+		sb.append("${tablebean.declaredName}DTO{");
+		%foreach tablebean.member in ${tablebean.members}		
+		sb.append("${tablebean.member.javaIdentifier}" ).append("=").append(${tablebean.member.javaIdentifier}).append("|");
+		%endfor
+		sb.append("serialVersionUID=").append(serialVersionUID).append("}");
+		return sb.toString();
     }
 
 }
