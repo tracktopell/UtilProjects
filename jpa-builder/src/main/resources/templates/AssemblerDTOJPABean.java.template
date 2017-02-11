@@ -34,19 +34,19 @@ import ${tableJPAbean.package}.${tablebean.declaredName};
  * Class for Asembler DTO Entity and JPA Entity for Table ${tablebean.name}.
  * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
- * @version 0.8.5
+ * @version 0.10.9
  * @date ${date}
  */
 
 public class ${tablebean.declaredName}Assembler {    
     
     /** 
-     * Default Constructor
+     * Private Constructor
      */
     private ${tablebean.declaredName}Assembler() {
     }
 
-    public static ${tableJPAbean.package}.${tablebean.declaredName} buildJpaEntity(${tablebean.declaredName} dtoEntity){
+    public static ${tableJPAbean.package}.${tablebean.declaredName} buildJpaEntity(${tablebean.declaredName}DTO dtoEntity){
 		if(dtoEntity != null){
 			return null;
 		}
@@ -58,12 +58,12 @@ public class ${tablebean.declaredName}Assembler {
         return jpaEntity;
     }
 
-	public static ${tablebean.declaredName} buildDTOEntity(${tableJPAbean.package}.${tablebean.declaredName} jpaEntity){
+	public static ${tablebean.declaredName}DTO buildDTOEntity(${tableJPAbean.package}.${tablebean.declaredName} jpaEntity){
 		if(jpaEntity != null){
 			return null;
 		}
 
-        ${tablebean.declaredName} dtoEntity =  new ${tablebean.declaredName}();		
+        ${tablebean.declaredName}DTO dtoEntity =  new ${tablebean.declaredName}DTO();		
 
         ${jpaCopyedToDtoMembers.code.code}
 

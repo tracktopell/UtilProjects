@@ -48,9 +48,9 @@ public class VPModel2DTOAndBeans {
 			
 			DTOBeanBuilder.buildMappingDTOBeansAndJPABeans(dbSet, dtoPackageBeanMember, jpaPackageBeanMember, basePath, flatDTOs );
 			
-			//DTOBeanBuilder.buildAssembler(dbSet, dtoPackageBeanMember, jpaPackageBeanMember, basePath);
+			DTOBeanBuilder.buildAssembler(dbSet, dtoPackageBeanMember, jpaPackageBeanMember, basePath);
 			
-			//JPABeanBuilder.buildMappingBeans(dbSet, jpaPackageBeanMember, basePath);
+			JPABeanBuilder.buildMappingBeans(dbSet, jpaPackageBeanMember, basePath);
             
         } catch (Exception ex) {
             ex.printStackTrace(System.err);

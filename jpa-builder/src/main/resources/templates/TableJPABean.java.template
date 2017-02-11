@@ -1,10 +1,10 @@
-
 package ${tablebean.package};
 
 import java.io.Serializable;
 import java.util.Set;
 import java.util.Collection;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -32,13 +32,11 @@ import javax.persistence.TemporalType;
 
 /**
  * Class for mapping JPA Entity of Table ${tablebean.name}.
- * m2m
+ * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
- * @version 0.8.5
+ * @version 0.10.9
  * @date ${date}
  */
-
-
 
 ${tablebean.jpa_entity_or_embeddeable}
 ${tablebean.jpa_talbe}
@@ -79,25 +77,42 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash = ${tablebean.hashCodeSumCode};
+        %foreach tablebean.member in ${tablebean.members}		
+		hash += String.valueOf(${tablebean.member.javaIdentifier}).hashCode();
+		%endfor
         return hash;
     }
 
+	@Override
     public boolean equals(Object o){
-
-        // TODO: Warning - this method won't work in the case the id fields are not set
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}        
         if (!(o instanceof ${tablebean.declaredName})) {
             return false;
-        }
-
-    	${tablebean.equalsCode}
-
+        }		
+		${tablebean.declaredName} other = (${tablebean.declaredName} ) o;
+		%foreach tablebean.member in ${tablebean.members}	
+		if (!Objects.equals(this.${tablebean.member.javaIdentifier}, other.${tablebean.member.javaIdentifier})) { return false; }		
+		%endfor
     	return true;
     }
 
     @Override
     public String toString() {
-        return ${tablebean.toStringCode};
+		StringBuilder sb=new StringBuilder();
+		sb.append("${tablebean.declaredName}DTO{");
+		%foreach tablebean.member in ${tablebean.members}		
+		sb.append("${tablebean.member.javaIdentifier}" ).append("=").append(${tablebean.member.javaIdentifier}).append("|");
+		%endfor
+		sb.append("serialVersionUID=").append(serialVersionUID).append("}");
+		return sb.toString();
     }
 
 }

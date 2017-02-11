@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
  * Class for mapping DTO Entity of Table ${tablebean.name}.
  * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
+ * @version 0.10.9
  * @date ${date}
  */
 
@@ -71,26 +72,45 @@ public class ${tablebean.declaredName} implements java.io.Serializable {
         return ${tablebean.toStringCode};
     }
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        %foreach tablebean.member in ${tablebean.members}		
+		hash += String.valueOf(${tablebean.member.javaIdentifier}).hashCode();
+		%endfor
+        return hash;
+    }
 
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		${tablebean.serializeCode}
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			${tablebean.scanCode}
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
+	@Override
+    public boolean equals(Object o){
+		if (this == o) {
+			return true;
 		}
-	}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}        
+        if (!(o instanceof ${tablebean.declaredName}DTO)) {
+            return false;
+        }		
+		${tablebean.declaredName}DTO  other = (${tablebean.declaredName}DTO ) o;
+		%foreach tablebean.member in ${tablebean.members}	
+		if (!Objects.equals(this.${tablebean.member.javaIdentifier}, other.${tablebean.member.javaIdentifier})) { return false; }		
+		%endfor
+    	return true;
+    }
+
+    @Override
+    public String toString() {
+		StringBuilder sb=new StringBuilder();
+		sb.append("${tablebean.declaredName}DTO{");
+		%foreach tablebean.member in ${tablebean.members}		
+		sb.append("${tablebean.member.javaIdentifier}" ).append("=").append(${tablebean.member.javaIdentifier}).append("|");
+		%endfor
+		sb.append("serialVersionUID=").append(serialVersionUID).append("}");
+		return sb.toString();
+    }
 
 }

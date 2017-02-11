@@ -146,6 +146,22 @@ public class JPABeanBuilder {
 										ps.println("    */");
 									}
 								}
+							} else if (lineInLoop.indexOf("${tablebean.member.javaIdentifier}") >= 0) {								
+								if(column.isForeignKey()){
+									if(!(table instanceof EmbeddeableColumn)){
+										if(hasNomalizaedFKReferences(fTable, column)){
+											lineInLoop = lineInLoop.replace("${tablebean.member.javaIdentifier}", fTable.getJavaDeclaredObjectName());
+										} else {
+											lineInLoop = lineInLoop.replace("${tablebean.member.javaIdentifier}", column.getJavaDeclaredObjectName());
+										}
+									} else {
+										lineInLoop = lineInLoop.replace("${tablebean.member.javaIdentifier}", column.getJavaDeclaredObjectName());
+									} 
+								} else {
+									lineInLoop = lineInLoop.replace("${tablebean.member.javaIdentifier}", column.getJavaDeclaredObjectName());
+								}
+								ps.println(lineInLoop);
+
 							} else if (lineInLoop.indexOf("${tablebean.member.declaration}") >= 0) {
 
 								if (table.isManyToManyTableWinthMoreColumns()) {

@@ -1,15 +1,12 @@
 package ${tablebean.package};
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.Collection;
-import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Class for mapping DTO Entity of Table ${tablebean.name}.
  * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
- * @version 0.8.5
+ * @version 0.10.9
  * @date ${date}
  */
 
@@ -41,25 +38,30 @@ public class ${tablebean.declaredName}DTO implements java.io.Serializable {
     public int hashCode() {
         int hash = 0;
         %foreach tablebean.member in ${tablebean.members}		
-		hash += ${tablebean.member.javaIdentifier}.hashCode();
+		hash += String.valueOf(${tablebean.member.javaIdentifier}).hashCode();
 		%endfor
         return hash;
     }
 
 	@Override
     public boolean equals(Object o){
-
-        // TODO: Warning - this method won't work in the case the id fields are not set
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}        
         if (!(o instanceof ${tablebean.declaredName}DTO)) {
             return false;
-        }
-
-		boolean flagEuals = true;
+        }		
 		${tablebean.declaredName}DTO  other = (${tablebean.declaredName}DTO ) o;
-		%foreach tablebean.member in ${tablebean.members}		
-		flagEuals = true; // flagEuals = flagEuals & this.${tablebean.member.javaIdentifier}.equals(other.${tablebean.member.javaIdentifier});
+		%foreach tablebean.member in ${tablebean.members}	
+		if (!Objects.equals(this.${tablebean.member.javaIdentifier}, other.${tablebean.member.javaIdentifier})) { return false; }		
 		%endfor
-    	return flagEuals;
+    	return true;
     }
 
     @Override
