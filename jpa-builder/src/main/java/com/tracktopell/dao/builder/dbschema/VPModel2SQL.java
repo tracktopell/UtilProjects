@@ -50,15 +50,17 @@ public class VPModel2SQL {
             System.err.println("->" + dbSet);
 
             DBBuilder dbBuilder = null;
-            if(rdbms.equals("mysql")) {
+            if(rdbms.equalsIgnoreCase("mysql")) {
                 dbBuilder = DBBuilderFactory.getInstance("com.tracktopell.dao.builder.dbschema.mysql.MySQLDBBuilder");
-            } else if(rdbms.equals("derby")) {
+            } else if(rdbms.equalsIgnoreCase("derby")) {
                 dbBuilder = DBBuilderFactory.getInstance("com.tracktopell.dao.builder.dbschema.derby.DerbyDBBuilder");
-            }
-            //System.out.println("->createDBSchema:");
+            } else {
+				throw new IllegalArgumentException("RDBMS not supported:"+rdbms);
+			}
+            System.out.println("->createDBSchema:");
             dbBuilder.createDBSchema(schemmaName, dbSet, new PrintStream(new FileOutputStream(outputPath)));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(System.err);
         }
     }
 }
