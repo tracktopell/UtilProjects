@@ -23,9 +23,9 @@ public class MySQLDBBuilder extends DBBuilder{
     }
 
     protected void printDefinitionSchema(String schemaName,DBTableSet dbSet,PrintStream out) {
-        out.println("DROP DATABASE IF EXISTS `${schemaName}`;".replace("${schemaName}",schemaName));
-        out.println("CREATE DATABASE `${schemaName}`;".replace("${schemaName}",schemaName));
-        out.println("USE `${schemaName}`;".replace("${schemaName}",schemaName));        
+        out.println("DROP DATABASE IF EXISTS ${schemaName};".replace("${schemaName}",schemaName));
+        out.println("CREATE DATABASE ${schemaName};".replace("${schemaName}",schemaName));
+        out.println("USE ${schemaName};".replace("${schemaName}",schemaName));        
     }
 
     protected void printDefinitionTable(Table currentTable, PrintStream out) {
@@ -33,18 +33,18 @@ public class MySQLDBBuilder extends DBBuilder{
         Column col = null;
         StringBuffer pkBuffer = new StringBuffer("PRIMARY KEY (");
         int pkConter=0;
-        out.println("CREATE TABLE `${table.name}`".replace("${table.name}",currentTable.getName().toUpperCase())+" (");
+        out.println("CREATE TABLE ${table.name}".replace("${table.name}",currentTable.getName().toUpperCase())+" (");
         while(it.hasNext()) {
             col = it.next();
-            out.print("\t`");
+            out.print("    ");
             out.print(col.getName().toUpperCase());
-            out.print("`\t\t");
+            out.print(" ");
             if( col.getSqlType().toUpperCase().equals("BLOB")) {
                 out.print("MEDIUMBLOB");
             } else {
                 out.print(col.getSqlType().toUpperCase());
             }
-            out.print("\t");
+            out.print(" ");
             if(col.getSqlType().equals("integer") || 
                     col.getSqlType().equals("varchar") || 
                     col.getSqlType().equals("decimal")){
@@ -56,27 +56,37 @@ public class MySQLDBBuilder extends DBBuilder{
                 }
                 out.print(")");                
             }
-            out.print("\t");
+            out.print(" ");
             if(!col.isNullable()) {
-                out.print(" NOT NULL");
+				if(col.getSqlType().equalsIgnoreCase("timestamp")){
+					out.print(" NOT NULL DEFAULT CURRENT_TIMESTAMP");
+				} else{
+					out.print(" NOT NULL");
+				}
+            } else if(col.isNullable()) {
+				if(col.getSqlType().equalsIgnoreCase("timestamp")){
+					out.print(" NULL DEFAULT NULL");
+				} else{
+					
+				}                
             }
             if(col.isAutoIncremment()) {
                 out.print(" AUTO_INCREMENT");
             }
-            out.println(" ,");                      
+            out.println(",");                      
             
             if(col.isPrimaryKey()) {
                 pkConter++;
                 if(pkConter>1)
                     pkBuffer.append(", ");
-                pkBuffer.append("`");                
+                pkBuffer.append("");                
                 pkBuffer.append(col.getName().toUpperCase());                
-                pkBuffer.append("`");
+                pkBuffer.append("");
             }
         }
         pkBuffer.append(")");
         
-        out.print("\t");
+        out.print("    ");
         out.println(pkBuffer);        
         out.println(")ENGINE=InnoDB;");        
         out.println("");
@@ -99,15 +109,15 @@ public class MySQLDBBuilder extends DBBuilder{
             if(col.isForeignKey()) {                
                 ReferenceTable rt = currentTable.getFKReferenceTable(col.getName());
                 
-                out.print("ALTER TABLE `");
+                out.print("ALTER TABLE ");
                 out.print(currentTable.getName().toUpperCase());
-                out.print("` ADD CONSTRAINT FOREIGN KEY (`");
+                out.print(" ADD CONSTRAINT FOREIGN KEY (");
                 out.print(col.getName().toUpperCase());                
-                out.print("`)\tREFERENCES `");
+                out.print(")    REFERENCES ");
                 out.print(rt.getTableName().toUpperCase());
-                out.print("`(`");
+                out.print("(");
                 out.print(rt.getColumnName().toUpperCase());
-                out.println("`);");                                
+                out.println(");");                                
             }
         }        
     }
